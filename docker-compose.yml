@@ -49,7 +49,7 @@ services:
       - "TCP4-LISTEN:80,bind=0.0.0.0,reuseaddr,fork"
       - "TCP4:172.31.254.2:80"
     ports:
-      - "127.0.0.1:${PHP2SHELL_HOST_PORT:-80}:80/tcp"
+      - "127.0.0.1:${PHP2SHELL_HOST_PORT:-9090}:80/tcp"
     depends_on:
       - target
     restart: unless-stopped

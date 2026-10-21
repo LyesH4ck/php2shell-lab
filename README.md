@@ -1,16 +1,15 @@
 # PHP2Shell isolated Docker lab
 
 This directory installs the exact vulnerable PHP 8.4.26 amd64 profile used by
-the calibrated PoC. It is deliberately vulnerable and publishes the target on
-host loopback only: `127.0.0.1:80`.
+the calibrated PoC. It is deliberately vulnerable and, by default, publishes
+the target on host loopback only: `127.0.0.1:9090`.
 
 ## Prerequisites
 
-- native Linux x86_64;
 - Docker Engine 28 or newer (the isolated bridge gateway mode is required);
 - either legacy `docker-compose` 1.29+ or current `docker compose`;
 - Python 3 and curl on the host;
-- free host TCP port `127.0.0.1:80`.
+- a free unprivileged host loopback TCP port (`127.0.0.1:9090` by default).
 
 The helper scripts automatically accept both Compose command styles. The
 Compose file itself uses the legacy 2.4 format.
@@ -18,6 +17,163 @@ Compose file itself uses the legacy 2.4 format.
 The legacy path has been verified with `docker-compose` 1.29.2 against Docker
 Engine 29.1.3. A current Compose plugin remains preferred because Compose 1.29
 is end-of-life.
+
+The target image is always `linux/amd64`. Native Linux x86_64 is the reference
+platform for the calibrated ASLR/RCE proof. Other platforms can run the target
+for smoke testing as described below.
+
+Check both the host shell and Docker server before starting:
+
+```sh
+uname -m
+docker info --format '{{.OSType}} {{.Architecture}} {{.ServerVersion}}'
+```
+
+The Docker operating system must be `linux`. Docker Engine must report version
+28 or newer.
+
+For the reference proof, `uname -m` must report `x86_64` and Docker must report
+`x86_64` or `amd64`. If the Docker server reports ARM64, the `linux/amd64`
+image is emulated even when the shell itself reports `x86_64`.
+
+Clone the repository once, then run the remaining commands from its root:
+
+```sh
+git clone https://github.com/LyesH4ck/php2shell-lab.git
+cd php2shell-lab
+```
+
+## Instructions by operating system
+
+| Test host | Start command | Supported use |
+| --- | --- | --- |
+| Linux x86_64/amd64 | `./scripts/up.sh` | Reference platform for the full RCE proof |
+| macOS Apple Silicon (`arm64`) | `ALLOW_EMULATION=1 ./scripts/up.sh` | Target smoke tests; RCE/ASLR proof is not reliable |
+| macOS Intel (`x86_64`) | `./scripts/up.sh` | Target and PoC testing; native Linux remains the reference proof platform |
+| Windows x86_64 with WSL2 | Run `./scripts/up.sh` inside WSL2 | Target and PoC testing; native Linux remains the reference proof platform |
+| Linux ARM64 | `ALLOW_EMULATION=1 ./scripts/up.sh` in a Linux shell | Target smoke tests only |
+| Windows ARM64 with WSL2 | Run `ALLOW_EMULATION=1 ./scripts/up.sh` inside WSL2 | Target smoke tests only |
+
+### Native Linux x86_64
+
+No emulation flag is required:
+
+```sh
+./scripts/up.sh
+./scripts/status.sh
+curl --noproxy '*' -fsS http://127.0.0.1:9090/
+./scripts/test.sh id
+```
+
+For multiple cold-master attempts:
+
+```sh
+MAX_ATTEMPTS=8 ./scripts/retry-test.sh id
+```
+
+### macOS Apple Silicon
+
+Docker Desktop or OrbStack must be able to run `linux/amd64` images. Export the
+emulation flag in the terminal used for the lab:
+
+```sh
+export ALLOW_EMULATION=1
+./scripts/up.sh
+./scripts/status.sh
+curl --noproxy '*' -fsS http://127.0.0.1:9090/
+```
+
+The target can be built and exercised this way. A failure of `test.sh` under
+Rosetta or QEMU does not disprove the vulnerability, and a result under
+emulation is not the calibrated native-ASLR proof.
+
+### macOS Intel
+
+An Intel Mac should report `x86_64` from `uname -m`; no emulation override is
+needed:
+
+```sh
+./scripts/up.sh
+./scripts/status.sh
+curl --noproxy '*' -fsS http://127.0.0.1:9090/
+./scripts/test.sh id
+```
+
+### Windows with WSL2
+
+Use a WSL2 Linux shell with Docker Desktop Linux-container integration. Do not
+run the POSIX helper scripts directly from PowerShell or `cmd.exe`:
+
+```sh
+uname -m
+./scripts/up.sh
+./scripts/status.sh
+curl --noproxy '*' -fsS http://127.0.0.1:9090/
+./scripts/test.sh id
+```
+
+On a Windows ARM64 system, export `ALLOW_EMULATION=1` before `up.sh` and treat
+the run as a smoke test only.
+
+### Linux ARM64
+
+The Docker server must have amd64 emulation available:
+
+```sh
+export ALLOW_EMULATION=1
+./scripts/up.sh
+./scripts/status.sh
+curl --noproxy '*' -fsS http://127.0.0.1:9090/
+```
+
+This mode is for target smoke tests, not the calibrated RCE proof.
+
+## Host port
+
+The default is the unprivileged loopback port `127.0.0.1:9090`. It avoids the
+privileged-port checks that can affect ports such as 80 and 443. It does not
+require elevated privileges for the host port binding itself, although the
+current user must still be allowed to access Docker. The target is never
+published on a non-loopback address.
+
+Port precedence is: `PHP2SHELL_HOST_PORT` from the current environment, then
+`.env`, then the built-in default `9090`. Run `unset PHP2SHELL_HOST_PORT` before
+relying on `.env` again.
+
+To change the port for the current terminal session, export it before running
+any helper script:
+
+```sh
+export PHP2SHELL_HOST_PORT=9191
+./scripts/up.sh
+./scripts/status.sh
+curl --noproxy '*' -fsS http://127.0.0.1:9191/
+./scripts/test.sh id
+```
+
+For a single command, prefix every helper invocation with the same value:
+
+```sh
+PHP2SHELL_HOST_PORT=9191 ./scripts/up.sh
+PHP2SHELL_HOST_PORT=9191 ./scripts/status.sh
+PHP2SHELL_HOST_PORT=9191 ./scripts/test.sh id
+```
+
+For a persistent local setting, edit `.env`:
+
+```dotenv
+COMPOSE_PROJECT_NAME=php2shell_lab
+PHP2SHELL_HOST_PORT=9191
+```
+
+After changing `.env`, run `./scripts/down.sh` followed by `./scripts/up.sh` so
+the relay is recreated with the new host-port mapping. Existing result files
+are preserved.
+
+Choose a free TCP port from 1024 through 65535. If `9090` is already in use,
+`9091` or `19090` are reasonable alternatives. The port controls only the host
+side of the loopback publication; the calibrated internal ports must not be
+changed.
 
 ## Start and verify
 
@@ -36,8 +192,9 @@ ff3ea77fb119541f6d10ddf0fa7e9e3fd6a3043e049a536b530dbbec35db68d6
 Apache remains on the calibrated in-container address `127.0.0.1:8088`. A
 relay in the target forwards its internal port 80 to Apache, while a separate,
 restricted Compose relay is attached to both the target network and a separate
-ingress bridge. Docker publishes only `127.0.0.1:80` to port 80 of that relay,
-which forwards to the target's fixed address.
+ingress bridge. Docker publishes only the configured loopback host port
+(`127.0.0.1:9090` by default) to port 80 of that relay, which forwards to the
+target's fixed address.
 
 The target network is both `internal` and configured with bridge gateway mode
 `isolated`. Unlike a plain internal network, Docker assigns no address such as
@@ -106,8 +263,34 @@ This removes the lab containers and both Compose networks, but preserves all
 receipts. It never runs `docker system prune` and never deletes images or
 results.
 
-If another host service already owns port 80, stop it first or choose another
-port in `.env`. Stopping this lab does not restart unrelated host services.
+If another host service already owns the configured host port, stop it or
+choose another value with `PHP2SHELL_HOST_PORT` or in `.env`. Stopping this lab
+does not restart unrelated host services.
+
+## Troubleshooting
+
+`This calibrated exploit requires native x86_64` on an ARM system means the
+architecture guard is working. Use `ALLOW_EMULATION=1` only for the smoke-test
+paths documented above.
+
+`127.0.0.1:PORT is unavailable: [Errno 13] Permission denied` means the chosen
+host port is privileged for the current user. Do not use `sudo`; reset the
+session to the default unprivileged port:
+
+```sh
+export PHP2SHELL_HOST_PORT=9090
+```
+
+If port 9090 is busy, select another unprivileged port and use the same value
+for `up.sh`, `status.sh`, and `test.sh`. An exported value overrides `.env`; use
+`unset PHP2SHELL_HOST_PORT` to return to the value stored in `.env`.
+
+Current Docker Compose releases may warn that the top-level `version` field is
+obsolete. It is retained for legacy `docker-compose` 1.29 compatibility. The
+warning is informational. On macOS, `DOCKER_INSECURE_NO_IPTABLES_RAW is set`
+may also be printed by the Docker backend. Continue only when `up.sh` finishes
+with `VERIFY_OK`; the verification result, rather than the warning alone,
+determines whether the lab started with its expected isolation.
 
 ## Direct Compose commands
 

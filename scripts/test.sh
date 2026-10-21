@@ -19,7 +19,7 @@ esac
 if [ -z "${PHP2SHELL_HOST_PORT+x}" ] && [ -f "$bundle_dir/.env" ]; then
     PHP2SHELL_HOST_PORT=$(sed -n 's/^PHP2SHELL_HOST_PORT=//p' "$bundle_dir/.env" | tail -n 1)
 fi
-host_port=${PHP2SHELL_HOST_PORT:-80}
+host_port=${PHP2SHELL_HOST_PORT:-9090}
 
 "$bundle_dir/scripts/verify.sh"
 

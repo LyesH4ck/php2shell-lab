@@ -7,7 +7,7 @@ compose="$bundle_dir/scripts/compose-command.sh"
 if [ -z "${PHP2SHELL_HOST_PORT+x}" ] && [ -f "$bundle_dir/.env" ]; then
     PHP2SHELL_HOST_PORT=$(sed -n 's/^PHP2SHELL_HOST_PORT=//p' "$bundle_dir/.env" | tail -n 1)
 fi
-host_port=${PHP2SHELL_HOST_PORT:-80}
+host_port=${PHP2SHELL_HOST_PORT:-9090}
 case "$host_port" in
     *[!0-9]*|'') echo "Invalid PHP2SHELL_HOST_PORT: $host_port" >&2; exit 2 ;;
 esac
@@ -109,6 +109,12 @@ s = socket.socket()
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 try:
     s.bind(("127.0.0.1", port))
+except PermissionError as exc:
+    raise SystemExit(
+        f"127.0.0.1:{port} cannot be bound by the current user: {exc}. "
+        "Choose an unprivileged host port, for example "
+        "PHP2SHELL_HOST_PORT=9090."
+    )
 except OSError as exc:
     raise SystemExit(f"127.0.0.1:{port} is unavailable: {exc}")
 finally:
