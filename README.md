@@ -333,6 +333,24 @@ The native four-worker WordPress reference receipt is stored under
 Return to the default with `unset PHP2SHELL_APACHE_WORKERS` (or set it to `1`)
 and recreate the stack.
 
+## Safe vulnerability check (no exploitation)
+
+Use the read-only checker to assess the PHP runtime and send, optionally, one
+tiny benign multipart request. It never attempts OOM, memory disclosure,
+worker manipulation, or command execution:
+
+```sh
+python3 scripts/php2shell-audit.py \
+  --docker-container php2shell-wordpress-lab \
+  --url http://127.0.0.1:9091/index.php \
+  --probe-multipart \
+  --output results/php2shell-audit.json
+```
+
+Pure remote checking intentionally returns `INDETERMINATE` when the effective
+PHP version/configuration cannot be proven. See [`DETECTION.md`](DETECTION.md)
+for the verdict model, safe-probe details, fixed releases, and exit codes.
+
 ## Stop
 
 ```sh
