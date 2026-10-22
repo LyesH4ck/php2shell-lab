@@ -217,6 +217,10 @@ checks instead.
 
 ## Run the exploit
 
+For the request-by-request root cause, address provenance, exact success
+criteria and an agent-ready reproduction prompt, read
+[`VULNERABILITY_CHAIN.md`](VULNERABILITY_CHAIN.md).
+
 One attempt:
 
 ```sh
