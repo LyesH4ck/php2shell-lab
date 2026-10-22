@@ -212,7 +212,7 @@ actual_libphp=$(docker exec "$container" sha256sum /usr/lib/apache2/modules/libp
     exit 1
 }
 
-expected_exploit=19f956c3f122c7596c457296767084b9d45e54916dd048671e6e348e70fcee39
+expected_exploit=2de1bdd1287167f9789507711badc9e5f5b1cac228312714ba0c0a31c7920980
 actual_exploit=$(sha256sum "$bundle_dir/exploit/exploit_off.py" | awk '{print $1}')
 [ "$actual_exploit" = "$expected_exploit" ] || {
     echo "exploit mismatch: $actual_exploit" >&2
@@ -245,8 +245,30 @@ if command -v ss >/dev/null 2>&1; then
     fi
 fi
 
-workers=$(docker top "$container" -eo pid,user,comm | awk '($2=="www-data" || $2=="33") && $3=="apache2" {n++} END {print n+0}')
-[ "$workers" = 1 ] || { echo "expected one Apache worker, got $workers" >&2; exit 1; }
+configured_workers=$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$container" |
+    sed -n 's/^PHP2SHELL_APACHE_WORKERS=//p' | tail -n 1)
+case "$configured_workers" in
+    *[!0-9]*|'')
+        echo "invalid configured Apache worker count: $configured_workers" >&2
+        exit 1
+        ;;
+esac
+[ "$configured_workers" -ge 1 ] && [ "$configured_workers" -le 16 ] || {
+    echo "configured Apache worker count is outside 1..16: $configured_workers" >&2
+    exit 1
+}
+worker_wait=1
+while [ "$worker_wait" -le 30 ]; do
+    workers=$(docker top "$container" -eo pid,user,comm | awk '($2=="www-data" || $2=="33") && $3=="apache2" {n++} END {print n+0}')
+    [ "$workers" = "$configured_workers" ] && break
+    [ "$worker_wait" -lt 30 ] || break
+    sleep 1
+    worker_wait=$((worker_wait + 1))
+done
+[ "$workers" = "$configured_workers" ] || {
+    echo "expected $configured_workers Apache workers, got $workers" >&2
+    exit 1
+}
 
 printf 'VERIFY_OK\n'
 printf 'url=http://127.0.0.1:%s/index.php\n' "$host_port"

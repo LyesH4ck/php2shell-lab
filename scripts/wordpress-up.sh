@@ -23,6 +23,26 @@ PY
 )
 export PHP2SHELL_WORDPRESS_HOST_PORT="$host_port"
 
+if [ -z "${PHP2SHELL_APACHE_WORKERS+x}" ] && [ -f "$bundle_dir/.env" ]; then
+    PHP2SHELL_APACHE_WORKERS=$(sed -n 's/^PHP2SHELL_APACHE_WORKERS=//p' "$bundle_dir/.env" | tail -n 1)
+fi
+apache_workers=${PHP2SHELL_APACHE_WORKERS:-1}
+case "$apache_workers" in
+    *[!0-9]*|'') echo "Invalid PHP2SHELL_APACHE_WORKERS: $apache_workers" >&2; exit 2 ;;
+esac
+apache_workers=$(python3 - "$apache_workers" <<'PY'
+import sys
+
+workers = int(sys.argv[1])
+if not 1 <= workers <= 16:
+    raise SystemExit(
+        f"PHP2SHELL_APACHE_WORKERS must be in 1..16, got {workers}"
+    )
+print(workers)
+PY
+)
+export PHP2SHELL_APACHE_WORKERS="$apache_workers"
+
 host_arch=$(uname -m)
 if [ "$host_arch" != x86_64 ] && [ "${ALLOW_EMULATION:-0}" != 1 ]; then
     echo "This calibrated exploit requires native x86_64." >&2

@@ -197,6 +197,7 @@ For a persistent local setting, edit `.env`:
 ```dotenv
 COMPOSE_PROJECT_NAME=php2shell_lab
 PHP2SHELL_HOST_PORT=9191
+PHP2SHELL_APACHE_WORKERS=1
 ```
 
 After changing `.env`, run `./scripts/down.sh` followed by `./scripts/up.sh` so
@@ -289,6 +290,48 @@ diagnostic metadata only.
 The command carrier is limited to 14 bytes. The exploit is intentionally
 restricted to loopback and private targets and is calibrated only for this
 exact PHP build; it is not a generic all-version PHP exploit.
+
+## Multiworker prefork mode
+
+The default remains one Apache prefork worker. Set
+`PHP2SHELL_APACHE_WORKERS` to an integer from `1` through `16` before creating
+the stack to exercise the same chain with several workers. Changing this value
+requires a teardown and a fresh start so Apache receives the new worker count.
+
+For example, run the real WordPress profile with four workers on native Linux
+x86_64 as follows:
+
+```sh
+export PHP2SHELL_APACHE_WORKERS=4
+./scripts/wordpress-down.sh
+./scripts/wordpress-up.sh
+MAX_ATTEMPTS=8 ./scripts/wordpress-retry-test.sh id
+```
+
+The multiworker harness uses prefork worker fencing. For `N` configured
+workers, it opens `N-1` TCP connections through the existing loopback relay,
+sends a complete benign `OPTIONS *` HTTP/1.1 request on each, reads each
+response, and retains those connections with keep-alive. Each retained
+connection parks one prefork child. Heartbeats refresh and validate the parked
+connections before exploit traffic; the one unparked child is therefore the
+only worker available for the request chain. A closed parking connection or a
+failed heartbeat makes the attempt fail closed.
+
+This is a deterministic lab technique, not a claim that the chain tolerates
+arbitrary production traffic. Run with zero concurrent requests: no browser,
+health checker, crawler, or second test client may access the published port
+during an attempt. The listener remains loopback-only, but any other process
+on the same host can still interfere with worker selection.
+
+The multiworker runner emits a separate receipt containing the configured
+worker count, the `N-1` parked-worker count, and the fencing mode. It is
+intentionally distinct from the stronger single-worker clean-terminal receipt,
+whose proof protocol snapshots the sole Apache worker around the terminal
+request. Do not describe a multiworker receipt as that single-worker proof.
+The native four-worker WordPress reference receipt is stored under
+[`artifacts/contabo-native-x86-wordpress-multiworker-20261022/`](artifacts/contabo-native-x86-wordpress-multiworker-20261022/).
+Return to the default with `unset PHP2SHELL_APACHE_WORKERS` (or set it to `1`)
+and recreate the stack.
 
 ## Stop
 

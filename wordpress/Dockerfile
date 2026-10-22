@@ -45,6 +45,8 @@ LABEL org.opencontainers.image.title="php2shell isolated WordPress vulnerable la
       org.opencontainers.image.version="7.1.3-sqlite3.1.1-php8.4.26-amd64" \
       io.php2shell.profile="wordpress-7.1.3-sqlite-3.1.1-php-8.4.26-amd64"
 
+ENV PHP2SHELL_APACHE_WORKERS=1
+
 # This is deliberately identical to the minimal lab's only runtime package.
 RUN set -eux; \
     apt-get update; \

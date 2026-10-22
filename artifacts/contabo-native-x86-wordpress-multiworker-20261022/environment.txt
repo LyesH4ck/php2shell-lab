@@ -1,0 +1,11 @@
+uname_m=x86_64
+kernel=Linux 7.0.0-38-generic
+docker_server=29.1.3
+docker_arch=x86_64
+container_image_id=sha256:7b991cccd0061879dfa69562769fe916354f6180c72194ec112b7b740ec2debb
+container_id=9d87de0cbc03f858acf486d36ff658c0cb2e52c73160dcf9caa7de7d5abb1a1b
+PHP2SHELL_APACHE_WORKERS=4
+PHP2SHELL_WORDPRESS_URL=http://127.0.0.1:9091
+published=127.0.0.1:9091
+workers=4
+exploit_sha256=2de1bdd1287167f9789507711badc9e5f5b1cac228312714ba0c0a31c7920980

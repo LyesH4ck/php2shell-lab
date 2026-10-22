@@ -8,6 +8,8 @@ services:
     image: php2shell-vulnerable-lab:8.4.26-amd64
     platform: linux/amd64
     container_name: php2shell-vulnerable-lab
+    environment:
+      PHP2SHELL_APACHE_WORKERS: "${PHP2SHELL_APACHE_WORKERS:-1}"
     restart: unless-stopped
     read_only: true
     tmpfs:

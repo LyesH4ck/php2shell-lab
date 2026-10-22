@@ -6,6 +6,8 @@ LABEL org.opencontainers.image.title="php2shell isolated vulnerable lab" \
       org.opencontainers.image.base.digest="sha256:745ef8b8e5291613b7f3e78d470c1497941e2ab548c869a7b0b506889ce6a1b3" \
       io.php2shell.profile="php-8.4.26-amd64-clean-terminal"
 
+ENV PHP2SHELL_APACHE_WORKERS=1
+
 # socat only bridges published port 80 to Apache's calibrated loopback-only
 # listener on 127.0.0.1:8088. It does not alter the PHP binary.
 RUN set -eux; \

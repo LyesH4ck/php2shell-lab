@@ -9,6 +9,7 @@ services:
     platform: linux/amd64
     container_name: php2shell-wordpress-lab
     environment:
+      PHP2SHELL_APACHE_WORKERS: "${PHP2SHELL_APACHE_WORKERS:-1}"
       PHP2SHELL_WORDPRESS_URL: "http://127.0.0.1:${PHP2SHELL_WORDPRESS_HOST_PORT:-9091}"
     restart: "no"
     read_only: true

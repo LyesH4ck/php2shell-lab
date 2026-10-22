@@ -87,6 +87,46 @@ exact WordPress/DB health response from the follow-up GET.
 The repository includes one successful native x86_64 reference receipt in
 [`artifacts/contabo-native-x86-wordpress-20261022/`](artifacts/contabo-native-x86-wordpress-20261022/).
 
+## Multiworker prefork reproduction
+
+WordPress uses one Apache prefork worker by default. To reproduce the chain
+with several workers, export `PHP2SHELL_APACHE_WORKERS` before recreating the
+stack. The accepted range is `1` through `16`; `1` is the default.
+
+This four-worker example keeps the publication on loopback at
+`127.0.0.1:9091`:
+
+```sh
+export PHP2SHELL_APACHE_WORKERS=4
+./scripts/wordpress-down.sh
+./scripts/wordpress-up.sh
+MAX_ATTEMPTS=8 ./scripts/wordpress-retry-test.sh id
+```
+
+For `N` workers, the exploit harness parks `N-1` prefork children on retained
+HTTP/1.1 connections. Each connection receives a complete benign `OPTIONS *`
+request and its response is read before the connection is held with
+keep-alive. Heartbeats verify and refresh every parked connection before the
+exploit requests. This leaves exactly one free child for the parser/RCE chain;
+if a parking connection closes, the attempt fails instead of silently losing
+worker affinity.
+
+Run this mode with zero concurrent traffic. Close browser tabs and do not run
+health checks, crawlers, parallel curl commands, or a second exploit client
+against the port during an attempt. Loopback-only publication prevents remote
+access, but another local process could still consume the sole free worker and
+invalidate the experiment.
+
+The multiworker test path writes a dedicated receipt that records the total
+worker count, the `N-1` parked workers, the prefork keep-alive fencing mode,
+the terminal command output, and the follow-up WordPress response. This receipt
+is deliberately different from the single-worker clean-terminal proof, which
+can snapshot one sole worker PID before and after the terminal request. To
+inspect a successful native four-worker run, see
+[`artifacts/contabo-native-x86-wordpress-multiworker-20261022/`](artifacts/contabo-native-x86-wordpress-multiworker-20261022/). To
+return to that proof protocol, unset the variable (or set it to `1`), then run
+`wordpress-down.sh` and `wordpress-up.sh` again.
+
 ## Contabo native x86_64 host
 
 The deployed reference checkout on `root@contabo` is

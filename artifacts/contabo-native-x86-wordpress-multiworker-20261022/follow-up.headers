@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Date: Thu, 22 Oct 2026 12:46:38 GMT
+Server: Apache/2.4.68 (Debian)
+X-Powered-By: PHP/8.4.26
+Link: <http://127.0.0.1:8088/index.php?rest_route=/>; rel="https://api.w.org/"
+Content-Length: 60
+Content-Type: text/plain; charset=UTF-8
+

@@ -40,6 +40,31 @@ if [ -z "${PHP2SHELL_HOST_PORT+x}" ] && [ -f "$bundle_dir/.env" ]; then
 fi
 host_port=${PHP2SHELL_HOST_PORT:-9090}
 
+configured_workers=$(
+    docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$container" \
+        2>/dev/null |
+        awk -F= '
+            $1 == "PHP2SHELL_APACHE_WORKERS" {
+                value = substr($0, index($0, "=") + 1)
+            }
+            END { print value }
+        '
+)
+configured_workers=${configured_workers:-1}
+case "$configured_workers" in
+    *[!0-9]*|'')
+        echo "Invalid PHP2SHELL_APACHE_WORKERS in $container: $configured_workers" >&2
+        exit 2
+        ;;
+esac
+if [ "$configured_workers" -lt 1 ] || [ "$configured_workers" -gt 16 ]; then
+    echo "PHP2SHELL_APACHE_WORKERS must be in 1..16, got $configured_workers" >&2
+    exit 2
+fi
+if [ "$configured_workers" -gt 1 ]; then
+    exec "$bundle_dir/scripts/test-multiworker.sh" "$@"
+fi
+
 "$verify_script"
 
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
