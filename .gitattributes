@@ -1,0 +1,3 @@
+artifacts/**/*.response binary
+artifacts/**/follow-up.headers binary
+artifacts/**/*.bin binary

@@ -43,6 +43,39 @@ git clone https://github.com/LyesH4ck/php2shell-lab.git
 cd php2shell-lab
 ```
 
+## Real WordPress profile
+
+A second Compose profile installs a complete WordPress 7.1.3 site with the
+official SQLite Database Integration 3.1.1 plugin while retaining the exact
+vulnerable PHP 8.4.26 runtime. The pinned PHP image already contains
+`pdo_sqlite`, so this profile installs no additional PHP extension and uses
+neither MariaDB nor `mysqli`. Its SQLite database lives in a tmpfs outside the
+web root and no database port exists or is published:
+
+```sh
+./scripts/wordpress-up.sh
+./scripts/wordpress-status.sh
+curl --noproxy '*' -fsS http://127.0.0.1:9091/index.php
+./scripts/wordpress-test.sh id
+```
+
+PHP parses each multipart POST before entering the front controller. After
+that parser stage, all POST requests to this deliberately constrained lab exit
+immediately without bootstrapping WordPress so the calibrated heap geometry is
+preserved. Ordinary GET requests load the real WordPress installation and
+theme and perform a real `SELECT 1` through `$wpdb`; the deterministic response
+ends with `sqlite=1`.
+
+A successful native x86_64 receipt, including the direct `id` output and the
+clean-terminal verification, is stored under
+[`artifacts/contabo-native-x86-wordpress-20261022/`](artifacts/contabo-native-x86-wordpress-20261022/).
+
+On ARM64, prefix the start command with `ALLOW_EMULATION=1`; this validates the
+site but is not a native-ASLR RCE proof. The minimal and WordPress profiles use
+the same calibrated private addresses and must not run at the same time. See
+[`WORDPRESS.md`](WORDPRESS.md) for architecture-specific commands, port
+configuration, installation details, evidence requirements, and teardown.
+
 ## Instructions by operating system
 
 | Test host | Start command | Supported use |

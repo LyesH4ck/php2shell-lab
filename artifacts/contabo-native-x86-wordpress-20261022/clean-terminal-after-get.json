@@ -1,0 +1,41 @@
+{
+  "label": "after-get",
+  "capture_started_unix_ns": 1792671582684367902,
+  "capture_started_at": "2026-10-22T12:19:42.684368Z",
+  "capture_completed_unix_ns": 1792671583459987813,
+  "capture_completed_at": "2026-10-22T12:19:43.459988Z",
+  "capture_started_monotonic_ns": 342182217244617,
+  "capture_completed_monotonic_ns": 342182992851594,
+  "container": {
+    "id": "df9b4514923f505f3a3d0b924f59d2d50ede7ca91368dd4288eb1239a2ed2e49",
+    "started_at": "2026-10-22T12:19:14.845504999Z",
+    "restart_count": 0,
+    "running": true,
+    "init_pid": 204398
+  },
+  "worker": {
+    "source": {
+      "docker_top_pid": "docker top -eo pid,user,comm",
+      "namespace_identity": "docker exec target; UID 33 apache2; /proc/PID/stat field 22"
+    },
+    "docker_top_count": 1,
+    "docker_top_pid": 205262,
+    "all_docker_top_pids": [
+      205262
+    ],
+    "namespace_count": 1,
+    "namespace_pid": 150,
+    "namespace_start_time_ticks": 34217960
+  },
+  "error_log": {
+    "source": "docker exec target; stat/wc/sha256sum",
+    "path": "/tmp/php2shell-apache-error.log",
+    "present": true,
+    "size": 3435,
+    "sha256": "16e96db360d6df413df67c694a242c08de421732ecfe3b1796512a84d6024833",
+    "device": 115,
+    "inode": 3,
+    "snapshot_stable": true
+  },
+  "capture_errors": []
+}

@@ -57,6 +57,12 @@ case "$server_arch" in
         ;;
 esac
 
+if docker inspect php2shell-wordpress-lab >/dev/null 2>&1; then
+    echo "The WordPress lab still exists and uses the calibrated network." >&2
+    echo "Run ./scripts/wordpress-down.sh before starting the minimal profile." >&2
+    exit 5
+fi
+
 # Refuse to reuse a running target attached to the old, host-addressable
 # internal bridge. The operator can remove it with scripts/down.sh first.
 python3 - <<'PY'

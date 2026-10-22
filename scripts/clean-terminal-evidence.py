@@ -18,6 +18,23 @@ from typing import Any, Sequence
 ERROR_LOG = "/tmp/php2shell-apache-error.log"
 EVIDENCE_PROTOCOL = "php2shell-clean-terminal-evidence/v1"
 SYNC_PROTOCOL = "php2shell-clean-terminal-sync/v1"
+APPLICATION_PROFILE_BODIES = {
+    "minimal": b"php2shell isolated lab\n",
+    "wordpress-7.1.3": (
+        b"php2shell wordpress lab\n"
+        b"wordpress=7.1.3\n"
+        b"database=1\n"
+        b"sqlite=1\n"
+    ),
+}
+APPLICATION_PROFILE_BODY_SHA256 = {
+    "minimal": (
+        "58e8a225fa3a8f081dac2b6e3beca6d75eeeddbe1e3e86de2edd8c433737d56f"
+    ),
+    "wordpress-7.1.3": (
+        "0cab4b9edc46a4c17ba60cf00ebfb234eaec0abffa89e5c00bfa10aaf401b123"
+    ),
+}
 
 
 def utc_from_ns(value: int) -> str:
@@ -291,6 +308,13 @@ def nested(value: dict[str, Any], *keys: str) -> Any:
 def verify_receipt(arguments: argparse.Namespace) -> int:
     receipt = arguments.receipt.resolve()
     errors: list[str] = []
+    application_profile = arguments.application_profile
+    expected_body = APPLICATION_PROFILE_BODIES[application_profile]
+    expected_body_sha256 = APPLICATION_PROFILE_BODY_SHA256[application_profile]
+    if sha256(expected_body) != expected_body_sha256:
+        errors.append(
+            f"internal expected-body hash mismatch for {application_profile!r}"
+        )
     snapshots = {
         "before_rce_b": load_json(
             receipt / "clean-terminal-before-rce-b.json", errors
@@ -470,7 +494,6 @@ def verify_receipt(arguments: argparse.Namespace) -> int:
     after_ack = nested(event_by_name.get("after-rce-b", {}), "ack_unix_ns")
     if isinstance(after_ack, int) and after_ack > arguments.get_started_unix_ns:
         errors.append("follow-up GET started before after-rce-b was acknowledged")
-    expected_body = b"php2shell isolated lab\n"
     if body != expected_body:
         errors.append("follow-up HTTP body does not match the lab health response")
     after_get_start = snapshots["after_get"].get("capture_started_unix_ns")
@@ -551,6 +574,8 @@ def verify_receipt(arguments: argparse.Namespace) -> int:
     follow_up = {
         "url": arguments.url,
         "host_header": arguments.host_header,
+        "application_profile": application_profile,
+        "expected_body_sha256": expected_body_sha256,
         "curl_exit": arguments.curl_exit,
         "http_status": arguments.http_status,
         "started_unix_ns": arguments.get_started_unix_ns,
@@ -570,6 +595,8 @@ def verify_receipt(arguments: argparse.Namespace) -> int:
         "protocol": EVIDENCE_PROTOCOL,
         "cross_process_ordering_clock": "unix_ns (time.time_ns)",
         "status": "CLEAN_TERMINAL_OK" if not errors else "FAILED",
+        "application_profile": application_profile,
+        "expected_body_sha256": expected_body_sha256,
         "exploit_exit": arguments.exploit_exit,
         "terminal_sync": sync,
         "barrier_files": barrier_files,
@@ -589,6 +616,8 @@ def verify_receipt(arguments: argparse.Namespace) -> int:
         f"protocol={EVIDENCE_PROTOCOL}",
         "cross_process_ordering_clock=unix_ns (time.time_ns)",
         f"status={evidence['status']}",
+        f"application_profile={application_profile}",
+        f"expected_body_sha256={expected_body_sha256}",
         f"exploit_exit={arguments.exploit_exit}",
     ]
     for key in ("before_rce_b", "after_rce_b", "after_get"):
@@ -666,6 +695,11 @@ def parser() -> argparse.ArgumentParser:
     verify.add_argument("--http-status", required=True)
     verify.add_argument("--url", required=True)
     verify.add_argument("--host-header", required=True)
+    verify.add_argument(
+        "--application-profile",
+        choices=tuple(APPLICATION_PROFILE_BODIES),
+        default="minimal",
+    )
     verify.add_argument("--get-started-unix-ns", type=int, required=True)
     verify.add_argument("--get-completed-unix-ns", type=int, required=True)
     verify.add_argument("--get-started-monotonic-ns", type=int, required=True)

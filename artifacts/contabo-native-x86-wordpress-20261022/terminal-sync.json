@@ -1,0 +1,30 @@
+{
+  "protocol": "php2shell-clean-terminal-sync/v1",
+  "session": "9c22d5ddfcb06635615d1a0fd7dae9d4",
+  "exploit_pid": 205002,
+  "timeout_seconds": 120.0,
+  "events": [
+    {
+      "sequence": 1,
+      "checkpoint": "before-rce-b",
+      "ready_file": "01-before-rce-b.ready",
+      "ack_file": "01-before-rce-b.ack",
+      "ready_unix_ns": 1792671580680981013,
+      "ready_monotonic_ns": 342180213876863,
+      "state": "acknowledged",
+      "ack_unix_ns": 1792671581461377359,
+      "ack_monotonic_ns": 342180994243013
+    },
+    {
+      "sequence": 2,
+      "checkpoint": "after-rce-b",
+      "ready_file": "02-after-rce-b.ready",
+      "ack_file": "02-after-rce-b.ack",
+      "ready_unix_ns": 1792671581584415488,
+      "ready_monotonic_ns": 342181117279258,
+      "state": "acknowledged",
+      "ack_unix_ns": 1792671582414549464,
+      "ack_monotonic_ns": 342181947414557
+    }
+  ]
+}

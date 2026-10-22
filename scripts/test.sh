@@ -2,10 +2,29 @@
 set -eu
 
 bundle_dir=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
-container=php2shell-vulnerable-lab
+container=${PHP2SHELL_TARGET_CONTAINER:-php2shell-vulnerable-lab}
+verify_script=${PHP2SHELL_VERIFY_SCRIPT:-scripts/verify.sh}
+application_profile=${PHP2SHELL_APPLICATION_PROFILE:-minimal}
+results_dir=${PHP2SHELL_RESULTS_DIR:-results}
 command=${*:-id}
 sync_timeout=${PHP2SHELL_TERMINAL_SYNC_TIMEOUT:-120}
 exploit_wait_timeout=${PHP2SHELL_EXPLOIT_WAIT_TIMEOUT:-900}
+
+case "$verify_script" in
+    /*) ;;
+    *) verify_script="$bundle_dir/$verify_script" ;;
+esac
+case "$results_dir" in
+    /*) ;;
+    *) results_dir="$bundle_dir/$results_dir" ;;
+esac
+case "$application_profile" in
+    minimal|wordpress-7.1.3) ;;
+    *)
+        echo "Invalid PHP2SHELL_APPLICATION_PROFILE: $application_profile" >&2
+        exit 2
+        ;;
+esac
 
 case "$sync_timeout" in
     *[!0-9]*|'') echo "Invalid PHP2SHELL_TERMINAL_SYNC_TIMEOUT: $sync_timeout" >&2; exit 2 ;;
@@ -21,10 +40,10 @@ if [ -z "${PHP2SHELL_HOST_PORT+x}" ] && [ -f "$bundle_dir/.env" ]; then
 fi
 host_port=${PHP2SHELL_HOST_PORT:-9090}
 
-"$bundle_dir/scripts/verify.sh"
+"$verify_script"
 
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
-output_dir="$bundle_dir/results/$stamp-$$"
+output_dir="$results_dir/$stamp-$$"
 mkdir -p "$output_dir"
 
 exploit_pid=
@@ -133,6 +152,7 @@ python3 -B "$bundle_dir/scripts/clean-terminal-evidence.py" verify \
     --http-status "$follow_status" \
     --url "$follow_url" \
     --host-header 127.0.0.1:8088 \
+    --application-profile "$application_profile" \
     --get-started-unix-ns "$get_started_unix_ns" \
     --get-completed-unix-ns "$get_completed_unix_ns" \
     --get-started-monotonic-ns "$get_started_monotonic_ns" \

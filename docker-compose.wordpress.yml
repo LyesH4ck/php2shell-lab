@@ -1,0 +1,101 @@
+version: "2.4"
+
+services:
+  target:
+    build:
+      context: .
+      dockerfile: wordpress/Dockerfile
+    image: php2shell-wordpress-lab:7.1.3-sqlite3.1.1-php8.4.26-amd64
+    platform: linux/amd64
+    container_name: php2shell-wordpress-lab
+    environment:
+      PHP2SHELL_WORDPRESS_URL: "http://127.0.0.1:${PHP2SHELL_WORDPRESS_HOST_PORT:-9091}"
+    restart: "no"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,noexec,size=67108864
+      - /run:rw,nosuid,nodev,noexec,size=16777216
+      - /var/lock:rw,nosuid,nodev,noexec,size=4194304
+      - /var/lib/php2shell-wordpress:rw,nosuid,nodev,noexec,size=67108864,uid=33,gid=33,mode=0700
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - NET_BIND_SERVICE
+      - SETGID
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: 1.0
+    ulimits:
+      core: 0
+      nofile:
+        soft: 1024
+        hard: 1024
+    networks:
+      isolated:
+        ipv4_address: 172.31.254.2
+    labels:
+      io.php2shell.lab: "true"
+      io.php2shell.wordpress: "true"
+      io.php2shell.profile: "wordpress-7.1.3-sqlite-3.1.1-php-8.4.26-amd64"
+
+  relay:
+    image: php2shell-wordpress-lab:7.1.3-sqlite3.1.1-php8.4.26-amd64
+    platform: linux/amd64
+    container_name: php2shell-wordpress-relay
+    entrypoint:
+      - /usr/bin/socat
+    command:
+      - "TCP4-LISTEN:80,bind=0.0.0.0,reuseaddr,fork"
+      - "TCP4:172.31.254.2:80"
+    ports:
+      - "127.0.0.1:${PHP2SHELL_WORDPRESS_HOST_PORT:-9091}:80/tcp"
+    depends_on:
+      - target
+    restart: "no"
+    read_only: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64
+    mem_limit: 64m
+    memswap_limit: 64m
+    cpus: 0.25
+    ulimits:
+      core: 0
+      nofile:
+        soft: 1024
+        hard: 1024
+    networks:
+      ingress:
+        ipv4_address: 172.31.253.2
+      isolated:
+        ipv4_address: 172.31.254.3
+    labels:
+      io.php2shell.relay: "true"
+      io.php2shell.wordpress: "true"
+
+networks:
+  ingress:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+    ipam:
+      config:
+        - subnet: 172.31.253.0/28
+  isolated:
+    driver: bridge
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.gateway_mode_ipv4: "isolated"
+    ipam:
+      config:
+        - subnet: 172.31.254.0/28
