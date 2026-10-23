@@ -73,7 +73,6 @@
 7f9c65cb326a68023609934af69de3bfc4e1852ce4e34aa54c5f6ea928fe6411  ./artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.25.png
 8bed8afd948db644f88508a2eb8bb9fb70b4ee8a6dc76b70b5f299b2b6bca52b  ./artifacts/contabo-native-x86-wordpress-20261022/terminal-sync.json
 8d574f84906c009b93876a266ef2684fa8e672b869b829172157f13212208a80  ./scripts/up.sh
-8d868333e1b2e89b12abdd80a20871234e1ba7fa3c6e6a8a373b0996c6267797  ./VULNERABILITY_CHAIN.md
 96806c0612f52091d2f838ac426e6ea8f19f52dfab7aaa9e5ef765cee3b61181  ./artifacts/contabo-native-x86-wordpress-20261022/rce-a.response
 99f6da2a0832a5c1f3526ca780a71a3aca3f9300185c340c6740f810ba0a2e54  ./artifacts/contabo-native-x86-wordpress-multiworker-20261022/rce-b.response
 9c69978e66cd7adfb667f1916593b27dab88d43769e100363dc6234764339200  ./artifacts/contabo-native-x86-wordpress-20261022/heap-cookie.bin
@@ -120,4 +119,5 @@ f83e5036036e4070803229923d105e7c077e68e152bc37a493823bae669e9acd  ./artifacts/co
 fb6f82216e665baa12f37a793a36f26ad715d404f2d9f73a288e16856c5f33ef  ./artifacts/contabo-native-x86-wordpress-multiworker-20261022/libphp-b.response
 ff070e4fefd00be76a621856afae7d3ddc55b80a68181f04dc57f5b557796186  ./scripts/status.sh
 d480ccce60aef568f7dcc13a8942efd1f0f7aa0a758fe71da86dc751da1508db  ./generic/exploit_generic.py
-874d7f5ac25c027bf6b7452b133fe409117b1dc42056c32dab4a4e8ec605e6d8  ./generic/README.md
+0d5b3e954860061af9decac9974ed19deb23ae67990fdf88c4c2f90e6ad982ed  ./generic/README.md
+9c2fba391ea40a82a6f8fd0c9e6af0f148af8a098bfd104f9ae214d719842e4f  ./VULNERABILITY_CHAIN.md

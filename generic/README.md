@@ -118,11 +118,24 @@ master restart draws a new mapping. The check is reported as
   works, phases 2-3 need the recalibration described above.
 - Non-official builds (distro packages) change both the offsets (solvable
   via the extractor) and potentially the heap geometry (needs recalibration).
-- Apache mod_php prefork only: FPM/CGI terminate the process after a
-  request-startup failure, so no cross-request state survives.
-- `post_max_size` must exceed `memory_limit` by a comfortable margin, or
-  the body is rejected before any OOM can occur (this excludes most default
-  production configs such as 128M/8M).
+- Apache mod_php prefork only: this client's producer is an OOM during
+  request startup, and FPM/CGI terminate the worker when
+  `php_request_startup()` fails, so this exact chain cannot carry across
+  FPM workers. FPM is not safe, however: the Calif write-up
+  (<https://calif.io/php2shell/>) demonstrates application-dependent RCE
+  under FPM using a different producer — an OOM interrupting a
+  post-startup decoding operation (`session_start()`, `unserialize()`,
+  WordPress `maybe_unserialize()`) leaves the generic unserializer state
+  (`BG(unserialize)`) dangling, and a later multipart request consumes it
+  through upload progress.
+- This client sends single-part Content-Length bodies, so its requests
+  must stay under `post_max_size` while reaching `memory_limit`
+  (comfortably true for the lab's 8M/32M profile). Production defaults
+  such as 128M/8M are not inherently out of reach in general: the Calif
+  write-up documents chunked HTTP/1.1 or lengthless HTTP/2 multipart
+  bodies (PHP compares `post_max_size` against the declared length) and
+  nested empty-filename upload amplification that exceeds a 128 MiB heap
+  from a body below 8 MiB.
 - The phase-2 freelist forge requires the favourable ASLR draw described
   above.
 - amd64 only; arm64 porting is future work.
