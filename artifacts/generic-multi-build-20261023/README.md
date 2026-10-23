@@ -5,6 +5,17 @@ against local isolated targets on the `root@contabo` research VM. Every
 target was network-isolated (loopback only). No third-party system was
 contacted.
 
+## php-8.4.26-run1/
+
+Full chain against the calibrated `php:8.4.26-apache-bookworm` target
+(pinned image digest, 1 prefork worker, `memory_limit=8M`,
+`display_errors=Off`) using the offsets extracted by
+`generic/libphp_offsets.py` from the pinned `libphp.so`
+(`--validate-8426` confirms they equal the original hand-calibrated
+values). This run closes the loop: every build in this receipt set,
+including the reference one, goes through the auto-extraction path.
+`RCE_OUTPUT_OBSERVED`, `uid=33(www-data)`.
+
 ## php-8.4.25-run1/ and php-8.4.25-run2/
 
 Full three-stage chain against a fresh `php:8.4.25-apache-bookworm`
@@ -38,8 +49,9 @@ remaining worker. `RCE_OUTPUT_OBSERVED`.
 ## wordpress-multiworker-run1/
 
 Full chain against the real WordPress profile of this repository
-(WordPress 7.1.3, SQLite plugin, PHP 8.4.26) with `--workers 4`:
-three prefork workers were parked on verified OPTIONS keep-alive connections
+(WordPress 7.1.3, SQLite plugin, PHP 8.4.26) with `--workers 4` and the
+auto-extracted `php-8.4.26-amd64` profile: three prefork workers were
+parked on verified OPTIONS keep-alive connections
 (`worker_affinity: prefork-keepalive-fencing`) and the chain ran on the
 remaining worker. `RCE_OUTPUT_OBSERVED`.
 
@@ -64,13 +76,17 @@ embedded in them.
 
 ## Screenshots
 
-Terminal captures of the six validated runs are kept next to this file:
+Terminal captures of the six validated runs are kept next to this file.
+Every run — including the 8.4.26 reference — went through the
+auto-extraction path of `generic/libphp_offsets.py`:
 
-- `screenshots/rce-php-8.4.26.png` — calibrated 8.4.26 target;
+- `screenshots/rce-php-8.4.26.png` — 8.4.26 with the auto-extracted
+  profile (values equal to the original hand calibration, verified by
+  `--validate-8426`);
 - `screenshots/rce-php-8.4.25.png` — 8.4.25 with the auto-extracted profile;
 - `screenshots/rce-php-8.4.20.png` — 8.4.20 with the auto-extracted profile;
 - `screenshots/rce-wordpress-multiworker.png` — WordPress on 8.4.26 with
-  four fenced prefork workers;
+  four fenced prefork workers and the auto-extracted profile;
 - `screenshots/rce-wordpress-php-8.4.25.png` — WordPress 7.1.3 on 8.4.25;
 - `screenshots/rce-wordpress-php-8.4.20.png` — WordPress 7.1.3 on 8.4.20.
 

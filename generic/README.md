@@ -14,8 +14,7 @@ other builds and topologies with minimal manual steps:
 
 | Target | Topology | Result |
 | --- | --- | --- |
-| `php:8.4.26-apache-bookworm` (pinned image) | 1 prefork worker, 8M | full RCE, `uid=33(www-data)` |
-| `php:8.4.25-apache-bookworm` | 1 prefork worker, 8M | full RCE, 2/2 runs (auto-extracted offsets) |
+| `php:8.4.26-apache-bookworm` (pinned image) | 1 prefork worker, 8M | full RCE, `uid=33(www-data)` || `php:8.4.25-apache-bookworm` | 1 prefork worker, 8M | full RCE, 2/2 runs (auto-extracted offsets) |
 | `php:8.4.20-apache-bookworm` | 1 prefork worker, 8M | full RCE (auto-extracted offsets) |
 | WordPress 7.1.3 + SQLite on `php:8.4.26` | **4 prefork workers**, 8M | full RCE (keep-alive parking, 3/4 fenced) |
 | WordPress 7.1.3 + SQLite on `php:8.4.25` | 1 prefork worker, 8M | full RCE (offsets auto-extracted) |
@@ -24,7 +23,10 @@ other builds and topologies with minimal manual steps:
 
 Receipts: `../artifacts/generic-multi-build-20261023/`, including terminal
 screenshots of the command execution on every validated target. All runs
-used local isolated targets (loopback only).
+use offsets extracted by `libphp_offsets.py` — for 8.4.26 the extracted
+values are identical to the original hand calibration, verified with
+`--validate-8426`. All targets were local and network-isolated
+(loopback only).
 
 Key finding: the calibrated heap geometry carries across the whole official
 `php:8.4.x-apache-bookworm` series tested (8.4.20 → 8.4.26); only the five

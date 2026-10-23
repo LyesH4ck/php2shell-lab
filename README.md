@@ -18,28 +18,29 @@ Every capture below is the full console log of a live run against a local,
 loopback-only target. The final block is the command output observed in the
 terminal HTTP response.
 
-| PHP 8.4.26 (calibrated lab) | PHP 8.4.25 (auto-extracted offsets) |
+| PHP 8.4.26 (auto-extracted offsets) | PHP 8.4.25 (auto-extracted offsets) |
 | --- | --- |
 | [![PHP 8.4.26 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.26.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.26.png) | [![PHP 8.4.25 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.25.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.25.png) |
 
-| PHP 8.4.20 (auto-extracted offsets) | WordPress 7.1.3 on PHP 8.4.26 — 4 workers fenced |
-| --- | --- |
+| PHP 8.4.20 (auto-extracted offsets) | WordPress 7.1.3 on PHP 8.4.26 — 4 workers fenced || --- | --- |
 | [![PHP 8.4.20 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.20.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.20.png) | [![WordPress multiworker run](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-multiworker.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-multiworker.png) |
 
 | WordPress 7.1.3 on PHP 8.4.25 | WordPress 7.1.3 on PHP 8.4.20 |
 | --- | --- |
 | [![WordPress on PHP 8.4.25](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.25.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.25.png) | [![WordPress on PHP 8.4.20](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.20.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.20.png) |
 
-Validated targets — same chain, no manual recalibration between builds:
+Validated targets — the same chain with offsets auto-extracted by
+`generic/libphp_offsets.py` from each build's `libphp.so`, no manual
+recalibration between builds:
 
 | Target | Topology | Result |
 | --- | --- | --- |
 | `php:8.4.26-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE `uid=33(www-data)` |
-| `php:8.4.25-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE, 2/2 runs (offsets auto-extracted) |
-| `php:8.4.20-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE (offsets auto-extracted) |
+| `php:8.4.25-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE, 2/2 runs |
+| `php:8.4.20-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE |
 | WordPress 7.1.3 + SQLite on 8.4.26 | **4 prefork workers** | ✅ RCE (keep-alive fencing) |
-| WordPress 7.1.3 + SQLite on 8.4.25 | 1 prefork worker, 8M | ✅ RCE (offsets auto-extracted) |
-| WordPress 7.1.3 + SQLite on 8.4.20 | 1 prefork worker, 8M | ✅ RCE (offsets auto-extracted) |
+| WordPress 7.1.3 + SQLite on 8.4.25 | 1 prefork worker, 8M | ✅ RCE |
+| WordPress 7.1.3 + SQLite on 8.4.20 | 1 prefork worker, 8M | ✅ RCE |
 | `php:8.4.26` @ `memory_limit=32M` | 1 worker | ✅ phase 1 leak (auto pad calibration) |
 
 Receipts and screenshots: [`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).
