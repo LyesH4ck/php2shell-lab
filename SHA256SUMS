@@ -1,4 +1,3 @@
-e0d6aecb7496c331685a3be5377d58d2a16e71918e4c56f1675aecaae89344c5  ./.DS_Store
 063dcbe394e902d019b62ec4222dfe2ecab49e75a8deb92e6684d66a097e6236  ./.dockerignore
 cf10a2aedb4124a7af0989e0641d7321ed434a5d78a762d827ae706f7253c806  ./.env
 cf10a2aedb4124a7af0989e0641d7321ed434a5d78a762d827ae706f7253c806  ./.env.example
@@ -6,7 +5,6 @@ c3d4d6ce2c8528f52b006ecde7e64dcca0b3a729d6eb2a1a70da40d7e654fb0f  ./.gitattribut
 5dd22a8091932d11599090e6d81057317b209bf272910c0401b5502fed64f392  ./.gitignore
 1d38975c05419e6e07c276fce16ee4a9ac8ffda3e5369dca0f09aa82679fc04f  ./DETECTION.md
 771af79a176cf81b66b727102cd6b1a2fc97777168c52b50089af3c03ca6f6e2  ./Dockerfile
-30a38ff0110216d804db660b67bd633d09de9f8bdffe70ae01f5c546b60809a5  ./README.md
 8d868333e1b2e89b12abdd80a20871234e1ba7fa3c6e6a8a373b0996c6267797  ./VULNERABILITY_CHAIN.md
 6225b1484d9994c5643bea12ebf74a562700ce332b8c9004845d77f60fd14b7e  ./WORDPRESS.md
 6255126e9062ebd86af941943389a3db0429fc0a52ef0716c96bb495e4727101  ./artifacts/contabo-native-x86-wordpress-20261022/01-before-rce-b.ack
@@ -102,3 +100,16 @@ d2ddb86fe245de2dcb9d8d5cf1dd76ec85ab883f0e37a52149a9493dde35b81d  ./tests/test_p
 b1839c98dc408788f41a69b2105daded9a620829134a3998108b86ee605acac5  ./wordpress/theme/php2shell-proof/index.php
 6c62e8d7441265ec18e5b0f060f935359440219b49048f6e16dae827a22ebcc0  ./wordpress/theme/php2shell-proof/style.css
 55d1fc1009bf54df7a080025c3e416c8226867ff039670d7b0433043e0e59f20  ./wordpress/wp-config.php
+5ccda2cf818aaab16a28bee20e6128254f1abccad783785bfe1fd262365eb1bf  ./README.md
+03a9b56bc3ffbbbe385c596eaa7d43b9d95898e5e6512888891acbb81069538d  ./generic/exploit_generic.py
+3ce88e5aa46cff93945088d5ac1d5f040e5bb7b86a77e02468a42aadf4f6651c  ./generic/libphp_offsets.py
+63202fde985eeaa74ae3bcabe33c67a8e4e32e2b30a458a24f1453d2f52c8174  ./generic/README.md
+4238f6872b6755fe743daadcd7aea7cb49267094b2e4c570d0c7700ecbae14b4  ./generic/profiles/php-8.4.20-amd64.json
+54f2e84af891de941a62cc331f2bc6450fe540b3f57447cf83e93580cb7f7dbd  ./generic/profiles/php-8.4.25-amd64.json
+eb3ca8684a3f1ec466e16b99622c55632ad02ee445e81f0c540072140142415e  ./artifacts/generic-multi-build-20261023/README.md
+73a62e343df65630b13930617cace8465c3eb004b558e560e4d932f99406ada1  ./artifacts/generic-multi-build-20261023/php-8.4.20-run1/result.json
+1284312579a530534fd18cdf4c2f65519e874ddc6a47344b7ad491ebda626c71  ./artifacts/generic-multi-build-20261023/php-8.4.25-run1/result.json
+64ce87a04c0b60b81af04404861658ea9ca2a11474519cfc11b5d553b025fb36  ./artifacts/generic-multi-build-20261023/php-8.4.25-run1/heap-cookie.bin
+cf921e74080b888218a10f36abb353ae9ac52916d78ade2dfe877cbdcfdf4e34  ./artifacts/generic-multi-build-20261023/php-8.4.25-run1/libphp-cookie.bin
+1284312579a530534fd18cdf4c2f65519e874ddc6a47344b7ad491ebda626c71  ./artifacts/generic-multi-build-20261023/php-8.4.25-run2/result.json
+ddba04344017115d23f2aebcb0232996e8e6f81cdc615a04c5b860250ef9c9cf  ./artifacts/generic-multi-build-20261023/wordpress-multiworker-run1/result.json

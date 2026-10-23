@@ -351,6 +351,32 @@ Pure remote checking intentionally returns `INDETERMINATE` when the effective
 PHP version/configuration cannot be proven. See [`DETECTION.md`](DETECTION.md)
 for the verdict model, safe-probe details, fixed releases, and exit codes.
 
+## Generic multi-build client
+
+`generic/exploit_generic.py` extends the calibrated chain to other builds of
+the same vulnerable series and reports the deployment prerequisites it can
+observe. It adds:
+
+- HTTP fingerprinting (`--fingerprint`) of the target's PHP/Server headers;
+- `generic/libphp_offsets.py`, an offset extractor for any `libphp.so`
+  (pure-Python ELF parsing, the target binary is never executed), feeding
+  `--profile-json` — validated against the pinned 8.4.26 offsets and used
+  to reproduce the full chain on `php:8.4.25` and `php:8.4.20` with no
+  recalibration;
+- prefork worker parking for multi-worker targets (`--workers N`), verified
+  end-to-end against the real WordPress profile with four workers;
+- automatic `memory_limit` pad calibration (`--memory-limit auto`) that
+  reproduces the phase-1 heap disclosure at other limits (validated at 32M);
+- an early ASLR-draw check (`aslr_draw_favourable` in `result.json`) that
+  predicts the phase-2 `IS_STR_PERMANENT` alias condition before spending
+  a rotation.
+
+Validation receipts live in
+[`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).
+See [`generic/README.md`](generic/README.md) for the full matrix, usage,
+calibration details and the current limitations (phases 2-3 remain bound to
+the 8M heap shape at other memory limits).
+
 ## Stop
 
 ```sh

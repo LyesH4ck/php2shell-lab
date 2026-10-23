@@ -1,0 +1,11 @@
+{
+  "libphp_sha256": "87dc86b0e92e2d50eacc95796b6fde039a8106da65ea75227c205c61d886108c",
+  "zval_ptr_dtor_offset": 6485984,
+  "zif_system_offset": 4440928,
+  "zif_passthru_offset": 4440944,
+  "zend_bailout_offset": 1689340,
+  "terminal_dispatch_offset": 5007945,
+  "php_version": "8.4.20",
+  "name": "php-8.4.20-amd64",
+  "description": "Profile generated from libphp.so (PHP 8.4.20, amd64) by libphp_offsets.py; heap geometry inherited from the php-8.4.26-amd64 calibration and expected to match official php:<version>-apache-bookworm images with the documented ini profile"
+}
