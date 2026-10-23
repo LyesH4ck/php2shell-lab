@@ -1,10 +1,89 @@
-# PHP2Shell isolated Docker lab
+# PHP2Shell lab — heap-leak-to-RCE chain, multi-build & multi-worker
+
+[![CVE-2026-109619](https://img.shields.io/badge/CVE--2026--109619-stale_session_globals-red)](https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp)
+[![CVE-2026-109618](https://img.shields.io/badge/CVE--2026--109618-OOM_bailout-orange)](https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w)
+[![PHP vulnerable range](https://img.shields.io/badge/PHP-8.4.x%20%E2%89%A4%208.4.26-777bb4)](https://www.php.net/archive/2026.php)
+[![chain](https://img.shields.io/badge/chain-3%20HTTP%20requests%20%E2%86%92%20uid%3D33%28www--data%29-brightgreen)](VULNERABILITY_CHAIN.md)
+
+This repository reproduces the complete **PHP2Shell** exploitation chain —
+from a memory disclosure in a `Set-Cookie` header to remote command execution
+— against deliberately vulnerable, network-isolated targets. Three plain
+HTTP multipart requests turn a benign page into `uid=33(www-data)`, with
+ASLR defeated by the two disclosures themselves and no debugger, `/proc`
+access or extra privileges.
+
+## Proof it works
+
+Every capture below is the full console log of a live run against a local,
+loopback-only target. The final block is the command output observed in the
+terminal HTTP response.
+
+| PHP 8.4.26 (calibrated lab) | PHP 8.4.25 (auto-extracted offsets) |
+| --- | --- |
+| [![PHP 8.4.26 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.26.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.26.png) | [![PHP 8.4.25 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.25.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.25.png) |
+
+| PHP 8.4.20 (auto-extracted offsets) | WordPress 7.1.3 — 4 workers fenced |
+| --- | --- |
+| [![PHP 8.4.20 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.20.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.20.png) | [![WordPress multiworker run](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-multiworker.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-multiworker.png) |
+
+Validated targets — same chain, no manual recalibration between builds:
+
+| Target | Topology | Result |
+| --- | --- | --- |
+| `php:8.4.26-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE `uid=33(www-data)` |
+| `php:8.4.25-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE, 2/2 runs (offsets auto-extracted) |
+| `php:8.4.20-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE (offsets auto-extracted) |
+| WordPress 7.1.3 + SQLite on 8.4.26 | **4 prefork workers** | ✅ RCE (keep-alive fencing) |
+| `php:8.4.26` @ `memory_limit=32M` | 1 worker | ✅ phase 1 leak (auto pad calibration) |
+
+Receipts and screenshots: [`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).
+
+## The chain in one minute
+
+1. **phase 1 — heap disclosure**: an upload-progress OOM leaves the session
+   state dangling; the next request leaks 4000 bytes of heap pointers
+   through `Set-Cookie` → Zend MM chunk base.
+2. **phase 2 — libphp disclosure**: the same primitive with a forged
+   nested carrier leaks `zval_ptr_dtor` → the `libphp.so` base, defeating
+   ASLR without reading `/proc`.
+3. **phase 3 — command execution**: a forged `zend_reference`/`HashTable`
+   whose `pDestructor` resolves to a two-callback
+   `zif_passthru`/`_zend_bailout` carrier runs the command and lets Apache
+   finalize the response normally — the `uid=33` output arrives in the HTTP
+   body.
+
+Full root-cause and request-by-request analysis:
+[`VULNERABILITY_CHAIN.md`](VULNERABILITY_CHAIN.md).
+
+## Quick start
+
+```sh
+git clone https://github.com/LyesH4ck/php2shell-lab.git
+cd php2shell-lab
+./scripts/up.sh                      # build + start the isolated target (loopback only)
+./scripts/test.sh id                 # run the chain, expect uid=33(www-data)
+```
+
+## Repository map
+
+| Path | Contents |
+| --- | --- |
+| [`generic/`](generic/) | multi-build client, ELF offset extractor, per-build profiles |
+| [`exploit/exploit_off.py`](exploit/exploit_off.py) | calibrated three-stage chain client |
+| [`scripts/`](scripts/) | lab lifecycle, exploit runners, safe exposure checker |
+| [`wordpress/`](wordpress/) | real WordPress profile (SQLite) |
+| [`artifacts/`](artifacts/) | receipts and screenshots of validated runs |
+| [`VULNERABILITY_CHAIN.md`](VULNERABILITY_CHAIN.md) | root cause and chain analysis |
+| [`DETECTION.md`](DETECTION.md) | safe (non-exploit) exposure checker and verdict model |
+| [`WORDPRESS.md`](WORDPRESS.md) | WordPress profile details |
+
+## Operating the lab
 
 This directory installs the exact vulnerable PHP 8.4.26 amd64 profile used by
 the calibrated PoC. It is deliberately vulnerable and, by default, publishes
 the target on host loopback only: `127.0.0.1:9090`.
 
-## Prerequisites
+### Prerequisites
 
 - Docker Engine 28 or newer (the isolated bridge gateway mode is required);
 - either legacy `docker-compose` 1.29+ or current `docker compose`;
@@ -353,30 +432,11 @@ for the verdict model, safe-probe details, fixed releases, and exit codes.
 
 ## Generic multi-build client
 
-`generic/exploit_generic.py` extends the calibrated chain to other builds of
-the same vulnerable series and reports the deployment prerequisites it can
-observe. It adds:
-
-- HTTP fingerprinting (`--fingerprint`) of the target's PHP/Server headers;
-- `generic/libphp_offsets.py`, an offset extractor for any `libphp.so`
-  (pure-Python ELF parsing, the target binary is never executed), feeding
-  `--profile-json` — validated against the pinned 8.4.26 offsets and used
-  to reproduce the full chain on `php:8.4.25` and `php:8.4.20` with no
-  recalibration;
-- prefork worker parking for multi-worker targets (`--workers N`), verified
-  end-to-end against the real WordPress profile with four workers;
-- automatic `memory_limit` pad calibration (`--memory-limit auto`) that
-  reproduces the phase-1 heap disclosure at other limits (validated at 32M);
-- an early ASLR-draw check (`aslr_draw_favourable` in `result.json`) that
-  predicts the phase-2 `IS_STR_PERMANENT` alias condition before spending
-  a rotation.
-
-Validation receipts — including terminal screenshots of the command
-execution on every validated PHP build — live in
-[`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).
-See [`generic/README.md`](generic/README.md) for the full matrix, usage,
-calibration details and the current limitations (phases 2-3 remain bound to
-the 8M heap shape at other memory limits).
+`generic/exploit_generic.py` is the multi-build client shown in the screenshots
+above: fingerprinting, per-build offset profiles, prefork parking,
+`memory_limit` auto-calibration and an early ASLR-draw check. Usage,
+calibration details and current limitations:
+[`generic/README.md`](generic/README.md).
 
 ## Stop
 
