@@ -35,6 +35,21 @@ three prefork workers were parked on verified OPTIONS keep-alive connections
 (`worker_affinity: prefork-keepalive-fencing`) and the chain ran on the
 remaining worker. `RCE_OUTPUT_OBSERVED`.
 
+## Screenshots
+
+Terminal captures of the four validated runs are kept next to this file:
+
+- `screenshots/rce-php-8.4.26.png` — calibrated 8.4.26 target;
+- `screenshots/rce-php-8.4.25.png` — 8.4.25 with the auto-extracted profile;
+- `screenshots/rce-php-8.4.20.png` — 8.4.20 with the auto-extracted profile;
+- `screenshots/rce-wordpress-multiworker.png` — WordPress with four fenced
+  prefork workers.
+
+Each capture shows the invoked command line, the three phase logs, the
+final `result.json` and the `RCE_OUTPUT_BEGIN ... RCE_OUTPUT_END` block
+containing `uid=33(www-data)`. They are rendered from the console logs of
+the runs whose `result.json` receipts are documented above.
+
 ## Notes
 
 - All runs report `aslr_draw_favourable: true`; the byte-4 `0x40` check

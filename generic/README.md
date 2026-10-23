@@ -20,8 +20,9 @@ other builds and topologies with minimal manual steps:
 | WordPress 7.1.3 + SQLite on `php:8.4.26` | **4 prefork workers**, 8M | full RCE (keep-alive parking, 3/4 fenced) |
 | `php:8.4.26-apache-bookworm` | 1 worker, **memory_limit=32M** | phase 1 complete (4000-byte heap disclosure via auto-calibrated pads); phases 2-3 remain 8M-geometry-bound |
 
-Receipts: `../artifacts/generic-multi-build-20261023/`. All runs used local
-isolated targets (loopback only).
+Receipts: `../artifacts/generic-multi-build-20261023/`, including terminal
+screenshots of the command execution on every validated target. All runs
+used local isolated targets (loopback only).
 
 Key finding: the calibrated heap geometry carries across the whole official
 `php:8.4.x-apache-bookworm` series tested (8.4.20 → 8.4.26); only the five

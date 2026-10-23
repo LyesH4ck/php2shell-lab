@@ -371,7 +371,8 @@ observe. It adds:
   predicts the phase-2 `IS_STR_PERMANENT` alias condition before spending
   a rotation.
 
-Validation receipts live in
+Validation receipts — including terminal screenshots of the command
+execution on every validated PHP build — live in
 [`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).
 See [`generic/README.md`](generic/README.md) for the full matrix, usage,
 calibration details and the current limitations (phases 2-3 remain bound to
