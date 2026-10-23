@@ -1,7 +1,6 @@
 00f8770f09aa9c5e49af65e846ecd164c7305875c8ac5ae26b0e166801534a3d  ./scripts/php2shell-audit.py
 02654550d709fadcff1e4eeb61a1529207f2a1c6b2a47aadbc2d5fb0d056a329  ./artifacts/contabo-native-x86-wordpress-20261022/clean-terminal-after-rce-b.json
 031fc80a623c707102089519a81be76cc8961401cee305c00913544f9f470b4a  ./artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.20.png
-03a9b56bc3ffbbbe385c596eaa7d43b9d95898e5e6512888891acbb81069538d  ./generic/exploit_generic.py
 03bfd7a5340ba85fd8304b8d894c2419de9752037f5aba01a08439a98454b668  ./wordpress/Dockerfile
 063dcbe394e902d019b62ec4222dfe2ecab49e75a8deb92e6684d66a097e6236  ./.dockerignore
 082a183a1aecbb9ef8046068880bcf01fb65e8d4a0a471bdf6e2256541891b5d  ./artifacts/contabo-native-x86-wordpress-20261022/heap-a.response
@@ -90,7 +89,6 @@ b63fc9377eff047a9144fcba78dabd357116dd2c752e33ed471d9f3a8613d4a2  ./artifacts/co
 bd681fe3138bcae924622c0abbd0899eae875978ea6352a7d343c28777216876  ./scripts/test.sh
 bd85cc886b1504cbe19c8714c36fcf82a259ae044a232e213f9aaabea9fac390  ./artifacts/contabo-native-x86-wordpress-multiworker-20261022/worker-parking.json
 c0820498c9500d8c9fbee32b5955980fb74fd6de451d79c5d1067dc55fb9c27b  ./artifacts/contabo-native-x86-wordpress-multiworker-20261022/libphp-a.response
-c1bfb764780afa0a8494d919aa1caec2615af31accdd02ce858e298e9ea9d6f4  ./generic/README.md
 c3d4d6ce2c8528f52b006ecde7e64dcca0b3a729d6eb2a1a70da40d7e654fb0f  ./.gitattributes
 c5d9e9a0732b9f9cda94e460d34d1442953b7a878d6cec99500d614ad42ca603  ./artifacts/contabo-native-x86-wordpress-multiworker-20261022/rotate-between-2-and-3-a.response
 c6727ee8dcbe0b171bf8b5c420e38ecdc2434dbb6393e5c119788e164bd30f89  ./artifacts/contabo-native-x86-wordpress-20261022/environment.txt
@@ -121,3 +119,5 @@ f7668b457442c215496335892ee21db63321ff492614dd6e79e745a9e263ae40  ./docker-compo
 f83e5036036e4070803229923d105e7c077e68e152bc37a493823bae669e9acd  ./artifacts/contabo-native-x86-wordpress-20261022/README.md
 fb6f82216e665baa12f37a793a36f26ad715d404f2d9f73a288e16856c5f33ef  ./artifacts/contabo-native-x86-wordpress-multiworker-20261022/libphp-b.response
 ff070e4fefd00be76a621856afae7d3ddc55b80a68181f04dc57f5b557796186  ./scripts/status.sh
+d480ccce60aef568f7dcc13a8942efd1f0f7aa0a758fe71da86dc751da1508db  ./generic/exploit_generic.py
+874d7f5ac25c027bf6b7452b133fe409117b1dc42056c32dab4a4e8ec605e6d8  ./generic/README.md

