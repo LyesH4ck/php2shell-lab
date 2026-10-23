@@ -35,15 +35,44 @@ three prefork workers were parked on verified OPTIONS keep-alive connections
 (`worker_affinity: prefork-keepalive-fencing`) and the chain ran on the
 remaining worker. `RCE_OUTPUT_OBSERVED`.
 
+## wordpress-multiworker-run1/
+
+Full chain against the real WordPress profile of this repository
+(WordPress 7.1.3, SQLite plugin, PHP 8.4.26) with `--workers 4`:
+three prefork workers were parked on verified OPTIONS keep-alive connections
+(`worker_affinity: prefork-keepalive-fencing`) and the chain ran on the
+remaining worker. `RCE_OUTPUT_OBSERVED`.
+
+## WordPress on PHP 8.4.25 and 8.4.20
+
+The same WordPress 7.1.3 + SQLite Integration 3.1.1 stack was rebuilt on
+`php:8.4.25-apache-bookworm` and `php:8.4.20-apache-bookworm` (only the base
+image changed; the pinned libphp/module-list checks are 8.4.26-specific and
+were dropped) and installed as `www-data`. The full chain then succeeded
+with the same auto-extracted offset profiles as the minimal targets:
+
+- WordPress/8.4.25: `RCE_OUTPUT_OBSERVED` (third cold-master attempt; the
+  first two drew an unfavourable ASLR mapping, correctly reported by the
+  client's `aslr_draw_favourable` check before phase 2);
+- WordPress/8.4.20: `RCE_OUTPUT_OBSERVED` on the first attempt.
+
+The complete console logs of both runs — including the `result.json` — are
+preserved as the screenshots
+`screenshots/rce-wordpress-php-8.4.25.png` and
+`screenshots/rce-wordpress-php-8.4.20.png`; the `result.json` fields are
+embedded in them.
+
 ## Screenshots
 
-Terminal captures of the four validated runs are kept next to this file:
+Terminal captures of the six validated runs are kept next to this file:
 
 - `screenshots/rce-php-8.4.26.png` — calibrated 8.4.26 target;
 - `screenshots/rce-php-8.4.25.png` — 8.4.25 with the auto-extracted profile;
 - `screenshots/rce-php-8.4.20.png` — 8.4.20 with the auto-extracted profile;
-- `screenshots/rce-wordpress-multiworker.png` — WordPress with four fenced
-  prefork workers.
+- `screenshots/rce-wordpress-multiworker.png` — WordPress on 8.4.26 with
+  four fenced prefork workers;
+- `screenshots/rce-wordpress-php-8.4.25.png` — WordPress 7.1.3 on 8.4.25;
+- `screenshots/rce-wordpress-php-8.4.20.png` — WordPress 7.1.3 on 8.4.20.
 
 Each capture shows the invoked command line, the three phase logs, the
 final `result.json` and the `RCE_OUTPUT_BEGIN ... RCE_OUTPUT_END` block

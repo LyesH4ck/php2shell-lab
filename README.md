@@ -22,9 +22,13 @@ terminal HTTP response.
 | --- | --- |
 | [![PHP 8.4.26 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.26.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.26.png) | [![PHP 8.4.25 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.25.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.25.png) |
 
-| PHP 8.4.20 (auto-extracted offsets) | WordPress 7.1.3 — 4 workers fenced |
+| PHP 8.4.20 (auto-extracted offsets) | WordPress 7.1.3 on PHP 8.4.26 — 4 workers fenced |
 | --- | --- |
 | [![PHP 8.4.20 run](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.20.png)](artifacts/generic-multi-build-20261023/screenshots/rce-php-8.4.20.png) | [![WordPress multiworker run](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-multiworker.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-multiworker.png) |
+
+| WordPress 7.1.3 on PHP 8.4.25 | WordPress 7.1.3 on PHP 8.4.20 |
+| --- | --- |
+| [![WordPress on PHP 8.4.25](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.25.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.25.png) | [![WordPress on PHP 8.4.20](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.20.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.20.png) |
 
 Validated targets — same chain, no manual recalibration between builds:
 
@@ -34,6 +38,8 @@ Validated targets — same chain, no manual recalibration between builds:
 | `php:8.4.25-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE, 2/2 runs (offsets auto-extracted) |
 | `php:8.4.20-apache-bookworm` | 1 prefork worker, 8M | ✅ RCE (offsets auto-extracted) |
 | WordPress 7.1.3 + SQLite on 8.4.26 | **4 prefork workers** | ✅ RCE (keep-alive fencing) |
+| WordPress 7.1.3 + SQLite on 8.4.25 | 1 prefork worker, 8M | ✅ RCE (offsets auto-extracted) |
+| WordPress 7.1.3 + SQLite on 8.4.20 | 1 prefork worker, 8M | ✅ RCE (offsets auto-extracted) |
 | `php:8.4.26` @ `memory_limit=32M` | 1 worker | ✅ phase 1 leak (auto pad calibration) |
 
 Receipts and screenshots: [`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).

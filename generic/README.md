@@ -18,6 +18,8 @@ other builds and topologies with minimal manual steps:
 | `php:8.4.25-apache-bookworm` | 1 prefork worker, 8M | full RCE, 2/2 runs (auto-extracted offsets) |
 | `php:8.4.20-apache-bookworm` | 1 prefork worker, 8M | full RCE (auto-extracted offsets) |
 | WordPress 7.1.3 + SQLite on `php:8.4.26` | **4 prefork workers**, 8M | full RCE (keep-alive parking, 3/4 fenced) |
+| WordPress 7.1.3 + SQLite on `php:8.4.25` | 1 prefork worker, 8M | full RCE (offsets auto-extracted) |
+| WordPress 7.1.3 + SQLite on `php:8.4.20` | 1 prefork worker, 8M | full RCE (offsets auto-extracted) |
 | `php:8.4.26-apache-bookworm` | 1 worker, **memory_limit=32M** | phase 1 complete (4000-byte heap disclosure via auto-calibrated pads); phases 2-3 remain 8M-geometry-bound |
 
 Receipts: `../artifacts/generic-multi-build-20261023/`, including terminal
