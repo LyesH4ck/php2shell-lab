@@ -1,0 +1,9 @@
+lab_index:
+    path: /
+    controller: App\Controller\LabController::index
+    methods: [GET]
+
+lab_health:
+    path: /healthz
+    controller: App\Controller\LabController::index
+    methods: [GET]

@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Date: Sun, 25 Oct 2026 13:26:38 GMT
+Server: Apache/2.4.62 (Debian)
+X-Powered-By: PHP/8.3.21
+Set-Cookie: PHPSESSID=3774e4852515a98b9904c98c7437fd32; path=/
+Content-Length: 32
+Connection: close
+Content-Type: text/plain; charset=UTF-8
+
+php2shell symfony 8.3.21 parser

@@ -1,0 +1,559 @@
+{
+  "protocol": "php2shell-prefork-keepalive-fencing/v1",
+  "configured_worker_count": 4,
+  "target_parked_worker_count": 3,
+  "opened_parking_connection_count": 3,
+  "active_parking_connections": 0,
+  "affinity": "prefork-keepalive-fencing",
+  "closed": true,
+  "events": [
+    {
+      "event": "open",
+      "connection": 1,
+      "unix_ns": 1792955960699894165,
+      "response_sha256": "02ad3a83a4fe656a42e8f970ccad0028e9f0f4a6b7bf86823eed884ff6e26c61"
+    },
+    {
+      "event": "open",
+      "connection": 2,
+      "unix_ns": 1792955960765685936,
+      "response_sha256": "02ad3a83a4fe656a42e8f970ccad0028e9f0f4a6b7bf86823eed884ff6e26c61"
+    },
+    {
+      "event": "open",
+      "connection": 3,
+      "unix_ns": 1792955960822724598,
+      "response_sha256": "02ad3a83a4fe656a42e8f970ccad0028e9f0f4a6b7bf86823eed884ff6e26c61"
+    },
+    {
+      "event": "heartbeat",
+      "label": "acquired",
+      "connection": 1,
+      "unix_ns": 1792955960879113994,
+      "response_sha256": "a568d15de851a69d4e6f499098943511f5e5661c35b774ede93187f401a83933"
+    },
+    {
+      "event": "heartbeat",
+      "label": "acquired",
+      "connection": 2,
+      "unix_ns": 1792955960881607360,
+      "response_sha256": "a568d15de851a69d4e6f499098943511f5e5661c35b774ede93187f401a83933"
+    },
+    {
+      "event": "heartbeat",
+      "label": "acquired",
+      "connection": 3,
+      "unix_ns": 1792955960883722153,
+      "response_sha256": "a568d15de851a69d4e6f499098943511f5e5661c35b774ede93187f401a83933"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-pre-a",
+      "connection": 1,
+      "unix_ns": 1792955961002494920,
+      "response_sha256": "df2dd5ae874ea6acf79ef1eb688fcd6e901c611f1ef1a6ece5e809fa65273a98"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-pre-a",
+      "connection": 2,
+      "unix_ns": 1792955961012027347,
+      "response_sha256": "cb0b0b16877d2b72b83ee976db06dc18a276e8da20fd8846c346e98516423f08"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-pre-a",
+      "connection": 3,
+      "unix_ns": 1792955961018894949,
+      "response_sha256": "cb0b0b16877d2b72b83ee976db06dc18a276e8da20fd8846c346e98516423f08"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-pre-a",
+      "connection": 1,
+      "unix_ns": 1792955961508337446,
+      "response_sha256": "fa5329aa12bce5a5f6dd4b73a73ba20dc14848041f5b145ef0cddb77e9d5bf32"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-pre-a",
+      "connection": 2,
+      "unix_ns": 1792955961510930859,
+      "response_sha256": "fa5329aa12bce5a5f6dd4b73a73ba20dc14848041f5b145ef0cddb77e9d5bf32"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-pre-a",
+      "connection": 3,
+      "unix_ns": 1792955961512403428,
+      "response_sha256": "fa5329aa12bce5a5f6dd4b73a73ba20dc14848041f5b145ef0cddb77e9d5bf32"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-pre-b",
+      "connection": 1,
+      "unix_ns": 1792955961780399320,
+      "response_sha256": "db79da5fcbff3f77632d6cb7359d6e827a4ccfcd7276acfa6f8e2b0894d7befe"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-pre-b",
+      "connection": 2,
+      "unix_ns": 1792955961784868050,
+      "response_sha256": "db79da5fcbff3f77632d6cb7359d6e827a4ccfcd7276acfa6f8e2b0894d7befe"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-pre-b",
+      "connection": 3,
+      "unix_ns": 1792955961789424363,
+      "response_sha256": "db79da5fcbff3f77632d6cb7359d6e827a4ccfcd7276acfa6f8e2b0894d7befe"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-pre-b",
+      "connection": 1,
+      "unix_ns": 1792955962108808239,
+      "response_sha256": "a495cb26f1d7b61c9e305b8ea7a33c156bde9758c27ad9c75657deea44ba0656"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-pre-b",
+      "connection": 2,
+      "unix_ns": 1792955962112186321,
+      "response_sha256": "a495cb26f1d7b61c9e305b8ea7a33c156bde9758c27ad9c75657deea44ba0656"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-pre-b",
+      "connection": 3,
+      "unix_ns": 1792955962113528327,
+      "response_sha256": "a495cb26f1d7b61c9e305b8ea7a33c156bde9758c27ad9c75657deea44ba0656"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-heap-a",
+      "connection": 1,
+      "unix_ns": 1792955962681275556,
+      "response_sha256": "d4d4db4a6ceae5d6fc32ba6132debcda433b88203dd62f01727f2ab770b7c2c6"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-heap-a",
+      "connection": 2,
+      "unix_ns": 1792955962683946182,
+      "response_sha256": "d4d4db4a6ceae5d6fc32ba6132debcda433b88203dd62f01727f2ab770b7c2c6"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-heap-a",
+      "connection": 3,
+      "unix_ns": 1792955962688860049,
+      "response_sha256": "d4d4db4a6ceae5d6fc32ba6132debcda433b88203dd62f01727f2ab770b7c2c6"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-heap-a",
+      "connection": 1,
+      "unix_ns": 1792955963791490820,
+      "response_sha256": "8df67871b71643c6e38bc6fc0fccc1dae69a6809a983279ac088ec79c8c04250"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-heap-a",
+      "connection": 2,
+      "unix_ns": 1792955963798858542,
+      "response_sha256": "8df67871b71643c6e38bc6fc0fccc1dae69a6809a983279ac088ec79c8c04250"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-heap-a",
+      "connection": 3,
+      "unix_ns": 1792955963804049214,
+      "response_sha256": "8df67871b71643c6e38bc6fc0fccc1dae69a6809a983279ac088ec79c8c04250"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-heap-b",
+      "connection": 1,
+      "unix_ns": 1792955963873309134,
+      "response_sha256": "9e84f313dc628a8ca3df91fabe4890b98499e9fc5e172d7a4c146f93b515303e"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-heap-b",
+      "connection": 2,
+      "unix_ns": 1792955963883787872,
+      "response_sha256": "9e84f313dc628a8ca3df91fabe4890b98499e9fc5e172d7a4c146f93b515303e"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-heap-b",
+      "connection": 3,
+      "unix_ns": 1792955963889106132,
+      "response_sha256": "9e84f313dc628a8ca3df91fabe4890b98499e9fc5e172d7a4c146f93b515303e"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-heap-b",
+      "connection": 1,
+      "unix_ns": 1792955963993878824,
+      "response_sha256": "b99aad4ad3b04bae92fc955a9796d411d5f2abe6f21c8829b56bd13fce78a6fb"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-heap-b",
+      "connection": 2,
+      "unix_ns": 1792955963995502172,
+      "response_sha256": "b99aad4ad3b04bae92fc955a9796d411d5f2abe6f21c8829b56bd13fce78a6fb"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-heap-b",
+      "connection": 3,
+      "unix_ns": 1792955964019285992,
+      "response_sha256": "5eafcb846704eb5a358b34cc593b2e0362936b6772b9da374aab836e594fc4e3"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-1-and-2-a",
+      "connection": 1,
+      "unix_ns": 1792955964198519105,
+      "response_sha256": "809f1a53e907ceb503dac5bf1245c0078ae799532807b248cca703f73a8dcc19"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-1-and-2-a",
+      "connection": 2,
+      "unix_ns": 1792955964207017740,
+      "response_sha256": "809f1a53e907ceb503dac5bf1245c0078ae799532807b248cca703f73a8dcc19"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-1-and-2-a",
+      "connection": 3,
+      "unix_ns": 1792955964224702297,
+      "response_sha256": "809f1a53e907ceb503dac5bf1245c0078ae799532807b248cca703f73a8dcc19"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-1-and-2-a",
+      "connection": 1,
+      "unix_ns": 1792955964431950459,
+      "response_sha256": "2a14d71dc196ec95648600f306b3c19aff59c97a7b5a632b4ec3c58392177d69"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-1-and-2-a",
+      "connection": 2,
+      "unix_ns": 1792955964509853352,
+      "response_sha256": "2a14d71dc196ec95648600f306b3c19aff59c97a7b5a632b4ec3c58392177d69"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-1-and-2-a",
+      "connection": 3,
+      "unix_ns": 1792955964520541919,
+      "response_sha256": "2a14d71dc196ec95648600f306b3c19aff59c97a7b5a632b4ec3c58392177d69"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-1-and-2-b",
+      "connection": 1,
+      "unix_ns": 1792955964794924178,
+      "response_sha256": "7fed83887fe04fa718b654b02c52e3c9c98c7512a73d69617dac7e88942d2ea7"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-1-and-2-b",
+      "connection": 2,
+      "unix_ns": 1792955964796827397,
+      "response_sha256": "7fed83887fe04fa718b654b02c52e3c9c98c7512a73d69617dac7e88942d2ea7"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-1-and-2-b",
+      "connection": 3,
+      "unix_ns": 1792955964805535100,
+      "response_sha256": "7fed83887fe04fa718b654b02c52e3c9c98c7512a73d69617dac7e88942d2ea7"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-1-and-2-b",
+      "connection": 1,
+      "unix_ns": 1792955965324896165,
+      "response_sha256": "6d416b28ffc465ee4e1a458b3e28cdb9cab4cd16efb2c4b277be98c4d71efa35"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-1-and-2-b",
+      "connection": 2,
+      "unix_ns": 1792955965330317517,
+      "response_sha256": "6d416b28ffc465ee4e1a458b3e28cdb9cab4cd16efb2c4b277be98c4d71efa35"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-1-and-2-b",
+      "connection": 3,
+      "unix_ns": 1792955965340136678,
+      "response_sha256": "6d416b28ffc465ee4e1a458b3e28cdb9cab4cd16efb2c4b277be98c4d71efa35"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-libphp-a",
+      "connection": 1,
+      "unix_ns": 1792955965910264633,
+      "response_sha256": "e23005ed0209ca4563edaf71db14ffd1f10505f6f7ace8ef67d64c852d3231eb"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-libphp-a",
+      "connection": 2,
+      "unix_ns": 1792955965915408018,
+      "response_sha256": "e23005ed0209ca4563edaf71db14ffd1f10505f6f7ace8ef67d64c852d3231eb"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-libphp-a",
+      "connection": 3,
+      "unix_ns": 1792955965926388898,
+      "response_sha256": "e23005ed0209ca4563edaf71db14ffd1f10505f6f7ace8ef67d64c852d3231eb"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-libphp-a",
+      "connection": 1,
+      "unix_ns": 1792955966799028713,
+      "response_sha256": "8e67c3143048727ee6f1f06fb36828264483524107a9b822050f315ca6fc096d"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-libphp-a",
+      "connection": 2,
+      "unix_ns": 1792955966810107105,
+      "response_sha256": "8e67c3143048727ee6f1f06fb36828264483524107a9b822050f315ca6fc096d"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-libphp-a",
+      "connection": 3,
+      "unix_ns": 1792955966860532750,
+      "response_sha256": "8e67c3143048727ee6f1f06fb36828264483524107a9b822050f315ca6fc096d"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-libphp-b",
+      "connection": 1,
+      "unix_ns": 1792955967173287411,
+      "response_sha256": "8d2e1a58941ad463d3e756766abaf93f0c3f55ee37ab7d5e6c913893d87785fc"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-libphp-b",
+      "connection": 2,
+      "unix_ns": 1792955967178991940,
+      "response_sha256": "8d2e1a58941ad463d3e756766abaf93f0c3f55ee37ab7d5e6c913893d87785fc"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-libphp-b",
+      "connection": 3,
+      "unix_ns": 1792955967187744346,
+      "response_sha256": "8d2e1a58941ad463d3e756766abaf93f0c3f55ee37ab7d5e6c913893d87785fc"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-libphp-b",
+      "connection": 1,
+      "unix_ns": 1792955967317273175,
+      "response_sha256": "3a7b6e9e3170775f4faa85bf40a812dac795187dbc715148fe6b0490e0b6e038"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-libphp-b",
+      "connection": 2,
+      "unix_ns": 1792955967318817145,
+      "response_sha256": "3a7b6e9e3170775f4faa85bf40a812dac795187dbc715148fe6b0490e0b6e038"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-libphp-b",
+      "connection": 3,
+      "unix_ns": 1792955967321618164,
+      "response_sha256": "3a7b6e9e3170775f4faa85bf40a812dac795187dbc715148fe6b0490e0b6e038"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-2-and-3-a",
+      "connection": 1,
+      "unix_ns": 1792955967446045425,
+      "response_sha256": "b8a09649e9d284b5f74bbbeaebdde60f7eb38c10bc35235eaf952b5346d6fddd"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-2-and-3-a",
+      "connection": 2,
+      "unix_ns": 1792955967451042519,
+      "response_sha256": "b8a09649e9d284b5f74bbbeaebdde60f7eb38c10bc35235eaf952b5346d6fddd"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-2-and-3-a",
+      "connection": 3,
+      "unix_ns": 1792955967453284377,
+      "response_sha256": "b8a09649e9d284b5f74bbbeaebdde60f7eb38c10bc35235eaf952b5346d6fddd"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-2-and-3-a",
+      "connection": 1,
+      "unix_ns": 1792955967634408387,
+      "response_sha256": "4a8f376837a6ea431c3653dbef5966d5ae406ae488933faa0f2bd6acfb04e0ca"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-2-and-3-a",
+      "connection": 2,
+      "unix_ns": 1792955967635831944,
+      "response_sha256": "4a8f376837a6ea431c3653dbef5966d5ae406ae488933faa0f2bd6acfb04e0ca"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-2-and-3-a",
+      "connection": 3,
+      "unix_ns": 1792955967636620550,
+      "response_sha256": "4a8f376837a6ea431c3653dbef5966d5ae406ae488933faa0f2bd6acfb04e0ca"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-2-and-3-b",
+      "connection": 1,
+      "unix_ns": 1792955967907879081,
+      "response_sha256": "428f8f6a6da904803ef90243ccd3d0fb6b559a2e34dbc0e706c1d3a9e0b1d8b1"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-2-and-3-b",
+      "connection": 2,
+      "unix_ns": 1792955967912978304,
+      "response_sha256": "428f8f6a6da904803ef90243ccd3d0fb6b559a2e34dbc0e706c1d3a9e0b1d8b1"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rotate-between-2-and-3-b",
+      "connection": 3,
+      "unix_ns": 1792955967926584266,
+      "response_sha256": "428f8f6a6da904803ef90243ccd3d0fb6b559a2e34dbc0e706c1d3a9e0b1d8b1"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-2-and-3-b",
+      "connection": 1,
+      "unix_ns": 1792955968451930502,
+      "response_sha256": "f48bd0ed825451890ca0ef69586bf5bae92c232460a35bf4f4a1fd844a308668"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-2-and-3-b",
+      "connection": 2,
+      "unix_ns": 1792955968453615556,
+      "response_sha256": "f48bd0ed825451890ca0ef69586bf5bae92c232460a35bf4f4a1fd844a308668"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rotate-between-2-and-3-b",
+      "connection": 3,
+      "unix_ns": 1792955968455730097,
+      "response_sha256": "f48bd0ed825451890ca0ef69586bf5bae92c232460a35bf4f4a1fd844a308668"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rce-a",
+      "connection": 1,
+      "unix_ns": 1792955969065072379,
+      "response_sha256": "1bdb49f12582e67bcbbd694ec619069e9577a0628f77e46292912fcb84f7048b"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rce-a",
+      "connection": 2,
+      "unix_ns": 1792955969070731302,
+      "response_sha256": "1bdb49f12582e67bcbbd694ec619069e9577a0628f77e46292912fcb84f7048b"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rce-a",
+      "connection": 3,
+      "unix_ns": 1792955969074734827,
+      "response_sha256": "1bdb49f12582e67bcbbd694ec619069e9577a0628f77e46292912fcb84f7048b"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rce-a",
+      "connection": 1,
+      "unix_ns": 1792955969957300892,
+      "response_sha256": "9a00c8c8539dd598041f751bca82eead8d7df298449e885b90d7e4b6018336e5"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rce-a",
+      "connection": 2,
+      "unix_ns": 1792955969965348137,
+      "response_sha256": "9a00c8c8539dd598041f751bca82eead8d7df298449e885b90d7e4b6018336e5"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rce-a",
+      "connection": 3,
+      "unix_ns": 1792955970010035309,
+      "response_sha256": "911fdc1b09094815abe7e9e3c68445e79f40c7dcec22ba4ef6456821e265c202"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rce-b",
+      "connection": 1,
+      "unix_ns": 1792955970085390806,
+      "response_sha256": "fe6ac7b06838a5a32d6ad4a3dbe00231ee0ba1fceed4497e04ec6f9675b5b046"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rce-b",
+      "connection": 2,
+      "unix_ns": 1792955970091411322,
+      "response_sha256": "fe6ac7b06838a5a32d6ad4a3dbe00231ee0ba1fceed4497e04ec6f9675b5b046"
+    },
+    {
+      "event": "heartbeat",
+      "label": "before-rce-b",
+      "connection": 3,
+      "unix_ns": 1792955970093214556,
+      "response_sha256": "fe6ac7b06838a5a32d6ad4a3dbe00231ee0ba1fceed4497e04ec6f9675b5b046"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rce-b",
+      "connection": 1,
+      "unix_ns": 1792955970172419671,
+      "response_sha256": "dcec9f2aab797085de6ce5d5109fed814ebef10607506191963f7e2e6e0125d9"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rce-b",
+      "connection": 2,
+      "unix_ns": 1792955970178227921,
+      "response_sha256": "dcec9f2aab797085de6ce5d5109fed814ebef10607506191963f7e2e6e0125d9"
+    },
+    {
+      "event": "heartbeat",
+      "label": "after-rce-b",
+      "connection": 3,
+      "unix_ns": 1792955970180130080,
+      "response_sha256": "dcec9f2aab797085de6ce5d5109fed814ebef10607506191963f7e2e6e0125d9"
+    },
+    {
+      "event": "close-all",
+      "connection_count": 3,
+      "unix_ns": 1792955970234992153
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+Date: Sun, 25 Oct 2026 18:32:10 GMT
+Server: Apache/2.4.62 (Debian)
+X-Powered-By: PHP/8.3.21
+Content-Length: 54
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+uid=33(www-data) gid=33(www-data) groups=33(www-data)

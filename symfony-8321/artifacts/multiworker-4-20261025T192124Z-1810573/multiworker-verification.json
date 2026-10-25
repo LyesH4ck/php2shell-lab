@@ -1,0 +1,10 @@
+{
+  "protocol": "php2shell-symfony-8321-multiworker/v1",
+  "verified": true,
+  "worker_count": 4,
+  "parked_worker_count": 3,
+  "command": "id",
+  "command_output_bytes": 54,
+  "command_output_sha256": "6d99797c5e70f1676baffdaab9979d52aef4d97cb7c457054182abe6e4075c1e",
+  "errors": []
+}

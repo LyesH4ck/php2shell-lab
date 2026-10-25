@@ -1,0 +1,10 @@
+{
+  "protocol": "php2shell-prefork-keepalive-fencing/v1",
+  "configured_worker_count": 1,
+  "target_parked_worker_count": 0,
+  "opened_parking_connection_count": 0,
+  "active_parking_connections": 0,
+  "affinity": "single-prefork-worker",
+  "closed": true,
+  "events": []
+}

@@ -1,0 +1,9 @@
+framework:
+    secret: 'php2shell-symfony-8321-lab-only'
+    http_method_override: false
+    handle_all_throwables: true
+    session: false
+    php_errors:
+        log: true
+    router:
+        utf8: true

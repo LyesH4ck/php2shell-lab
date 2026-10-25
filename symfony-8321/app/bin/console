@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+use App\Kernel;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+
+if (!is_file(dirname(__DIR__).'/vendor/autoload.php')) {
+    throw new LogicException('Run Composer before using the Symfony console.');
+}
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+$kernel = new Kernel($_SERVER['APP_ENV'] ?? 'prod', (bool) ($_SERVER['APP_DEBUG'] ?? false));
+$application = new Application($kernel);
+$application->run();

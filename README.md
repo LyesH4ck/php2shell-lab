@@ -29,6 +29,10 @@ terminal HTTP response.
 | --- | --- |
 | [![WordPress on PHP 8.4.25](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.25.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.25.png) | [![WordPress on PHP 8.4.20](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.20.png)](artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.20.png) |
 
+| Symfony 7.4.21 on PHP 8.4.26 | Symfony 7.4.19 on PHP 8.3.21 — 4 workers fenced |
+| --- | --- |
+| [![Symfony on PHP 8.4.26](artifacts/symfony-20261025/screenshots/rce-symfony-php-8.4.26.png)](artifacts/symfony-20261025/screenshots/rce-symfony-php-8.4.26.png) | [![Symfony on PHP 8.3.21](artifacts/symfony-20261025/screenshots/rce-symfony-php-8.3.21.png)](artifacts/symfony-20261025/screenshots/rce-symfony-php-8.3.21.png) |
+
 Validated targets — the same chain with offsets auto-extracted by
 `generic/libphp_offsets.py` from each build's `libphp.so`, no manual
 recalibration between builds:
@@ -41,6 +45,8 @@ recalibration between builds:
 | WordPress 7.1.3 + SQLite on 8.4.26 | **4 prefork workers** | ✅ RCE (keep-alive fencing) |
 | WordPress 7.1.3 + SQLite on 8.4.25 | 1 prefork worker, 8M | ✅ RCE |
 | WordPress 7.1.3 + SQLite on 8.4.20 | 1 prefork worker, 8M | ✅ RCE |
+| Symfony 7.4.21 on 8.4.26 | 1 prefork worker, 8M | ✅ RCE |
+| Symfony 7.4.19 on **8.3.21** | **4 prefork workers**, 8M | ✅ RCE (dedicated 8.3 calibration) |
 | `php:8.4.26` @ `memory_limit=32M` | 1 worker | ✅ phase 1 leak (auto pad calibration) |
 
 Receipts and screenshots: [`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).
@@ -79,10 +85,12 @@ cd php2shell-lab
 | [`exploit/exploit_off.py`](exploit/exploit_off.py) | calibrated three-stage chain client |
 | [`scripts/`](scripts/) | lab lifecycle, exploit runners, safe exposure checker |
 | [`wordpress/`](wordpress/) | real WordPress profile (SQLite) |
+| [`symfony/`](symfony/) + [`symfony-8321/`](symfony-8321/) | real Symfony profiles (7.4.21/8.4.26 and 7.4.19/8.3.21, see [`SYMFONY.md`](SYMFONY.md)) |
 | [`artifacts/`](artifacts/) | receipts and screenshots of validated runs |
 | [`VULNERABILITY_CHAIN.md`](VULNERABILITY_CHAIN.md) | root cause and chain analysis |
 | [`DETECTION.md`](DETECTION.md) | safe (non-exploit) exposure checker and verdict model |
 | [`WORDPRESS.md`](WORDPRESS.md) | WordPress profile details |
+| [`SYMFONY.md`](SYMFONY.md) | Symfony profile details |
 
 ## Operating the lab
 
