@@ -37,6 +37,10 @@ terminal HTTP response.
 | --- | --- |
 | [![FPM heap disclosure](artifacts/fpm-20261026/screenshots/leak-fpm-phpinfo.png)](artifacts/fpm-20261026/screenshots/leak-fpm-phpinfo.png) | [![FPM RCE](artifacts/fpm-20261026/screenshots/rce-fpm-php8321.png)](artifacts/fpm-20261026/screenshots/rce-fpm-php8321.png) |
 
+| Offsec lab: full RCE + flag | |
+| --- | --- |
+| [![Offsec lab RCE](artifacts/remote-offsec-20261026/screenshots/rce-offsec-lab.png)](artifacts/remote-offsec-20261026/screenshots/rce-offsec-lab.png) | |
+
 Validated targets — the same chain with offsets auto-extracted by
 `generic/libphp_offsets.py` from each build's `libphp.so`, no manual
 recalibration between builds:
@@ -127,6 +131,8 @@ The PoC is [`lab/offsec/rce_display_on.py`](lab/offsec/rce_display_on.py)
 and the command helper is
 [`lab/offsec/run_known_command.py`](lab/offsec/run_known_command.py).
 Receipts and raw logs: [`artifacts/remote-offsec-20261026/`](artifacts/remote-offsec-20261026/).
+A terminal capture of the full chain is at
+[`screenshots/rce-offsec-lab.png`](artifacts/remote-offsec-20261026/screenshots/rce-offsec-lab.png).
 
 ## Operating the lab
 
