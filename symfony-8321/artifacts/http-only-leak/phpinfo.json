@@ -1,0 +1,27 @@
+{
+  "attempt": 2,
+  "sink": "phpinfo",
+  "session": "lre596fd97f2",
+  "stage_http_status": {
+    "r1": 502,
+    "prime_r2a": 500,
+    "r2a": 502,
+    "prime_r2b": 500,
+    "r2b": 502,
+    "prime_r3": 500,
+    "r3": 200
+  },
+  "response_bytes": 77286,
+  "response_sha256": "3b9eac67c547680c4370d5a702fc69536017cf201a95f0895cb6f8726e188c9d",
+  "pointer_evidence": [
+    {
+      "offset": "0xd95d",
+      "value": "0x7373590b2280",
+      "decimal": 126939252335232
+    }
+  ],
+  "pointer_clusters_2m": {
+    "0x737359000000": 1
+  },
+  "success": true
+}

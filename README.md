@@ -33,6 +33,10 @@ terminal HTTP response.
 | --- | --- |
 | [![Symfony on PHP 8.4.26](artifacts/symfony-20261025/screenshots/rce-symfony-php-8.4.26.png)](artifacts/symfony-20261025/screenshots/rce-symfony-php-8.4.26.png) | [![Symfony on PHP 8.3.21](artifacts/symfony-20261025/screenshots/rce-symfony-php-8.3.21.png)](artifacts/symfony-20261025/screenshots/rce-symfony-php-8.3.21.png) |
 
+| nginx + PHP-FPM: heap base via `/_profiler/phpinfo` | nginx + PHP-FPM: full RCE |
+| --- | --- |
+| [![FPM heap disclosure](artifacts/fpm-20261026/screenshots/leak-fpm-phpinfo.png)](artifacts/fpm-20261026/screenshots/leak-fpm-phpinfo.png) | [![FPM RCE](artifacts/fpm-20261026/screenshots/rce-fpm-php8321.png)](artifacts/fpm-20261026/screenshots/rce-fpm-php8321.png) |
+
 Validated targets — the same chain with offsets auto-extracted by
 `generic/libphp_offsets.py` from each build's `libphp.so`, no manual
 recalibration between builds:
@@ -47,6 +51,7 @@ recalibration between builds:
 | WordPress 7.1.3 + SQLite on 8.4.20 | 1 prefork worker, 8M | ✅ RCE |
 | Symfony 7.4.21 on 8.4.26 | 1 prefork worker, 8M | ✅ RCE |
 | Symfony 7.4.19 on **8.3.21** | **4 prefork workers**, 8M | ✅ RCE (dedicated 8.3 calibration) |
+| Symfony 7.4.19 on **8.3.21 — nginx+FPM** | 1 FPM worker (fenced 4/6-worker also validated) | ✅ heap disclosure via WebProfiler `/_profiler/phpinfo` + RCE (FPM branch of the chain, see [`symfony-8321/FPM-LAB.md`](symfony-8321/FPM-LAB.md)) |
 | `php:8.4.26` @ `memory_limit=32M` | 1 worker | ✅ phase 1 leak (auto pad calibration) |
 
 Receipts and screenshots: [`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).

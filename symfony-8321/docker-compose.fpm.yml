@@ -1,0 +1,85 @@
+version: "2.4"
+
+services:
+  fpm-target:
+    build:
+      context: .
+      dockerfile: fpm/Dockerfile
+    image: php2shell-fpm-lab:php8.3.21-symfony7.4.19-amd64
+    platform: linux/amd64
+    container_name: php2shell-fpm-8321
+    restart: "no"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,noexec,size=268435456
+      - /var/run:rw,nosuid,nodev,noexec,size=16777216
+      - /var/www/html/var/cache:rw,nosuid,nodev,noexec,size=67108864
+      - /var/www/html/var/log:rw,nosuid,nodev,noexec,size=16777216
+      - /var/www/html/public/proof:rw,nosuid,nodev,noexec,size=33554432
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 768m
+    memswap_limit: 768m
+    cpus: 2.0
+    networks:
+      isolated:
+        ipv4_address: 172.31.248.2
+
+  nginx:
+    image: nginx:1.28.0-alpine@sha256:30f1c0d78e0ad60901648be663a710bdadf19e4c10ac6782c235200619158284
+    platform: linux/amd64
+    container_name: php2shell-fpm-topology-nginx
+    depends_on:
+      - fpm-target
+    restart: "no"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,noexec,size=134217728
+      - /var/cache/nginx:rw,nosuid,nodev,noexec,size=16777216
+    volumes:
+      - ./fpm/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "127.0.0.1:${PHP2SHELL_FPM_BLOCKED_PORT:-9195}:8080/tcp"
+      - "127.0.0.1:${PHP2SHELL_FPM_ORIGIN_PORT:-9196}:8081/tcp"
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64
+    mem_limit: 192m
+    memswap_limit: 192m
+    cpus: 0.5
+    networks:
+      ingress:
+        ipv4_address: 172.31.247.2
+      isolated:
+        ipv4_address: 172.31.248.3
+
+networks:
+  ingress:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+    ipam:
+      config:
+        - subnet: 172.31.247.0/28
+  isolated:
+    driver: bridge
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.gateway_mode_ipv4: "isolated"
+    ipam:
+      config:
+        - subnet: 172.31.248.0/28

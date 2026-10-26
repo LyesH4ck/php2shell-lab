@@ -1,0 +1,29 @@
+{
+  "attempt": 1,
+  "session": "lr24589ce4c1",
+  "stage_http_status": {
+    "r1": 502,
+    "prime_r2a": 500,
+    "r2a": 502,
+    "prime_r2b": 500,
+    "r2b": 502,
+    "prime_r3": 500,
+    "r3": 200
+  },
+  "response_bytes": 1343207,
+  "response_sha256": "c68cf83f4bcf1dbec7d51293f84832e8fa8b3bdbea3278c414e7905169f00b37",
+  "pointer_qwords_first_16k": [
+    {
+      "offset": "0x0",
+      "value": "0x7e903ee643a0"
+    },
+    {
+      "offset": "0x8",
+      "value": "0x7e903ee643c0"
+    }
+  ],
+  "pointer_clusters_2m": {
+    "0x7e903ee00000": 2
+  },
+  "success": true
+}

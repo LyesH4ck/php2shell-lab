@@ -7,3 +7,7 @@ lab_health:
     path: /healthz
     controller: App\Controller\LabController::index
     methods: [GET]
+
+web_profiler:
+    resource: '@WebProfilerBundle/Resources/config/routing/profiler.php'
+    prefix: /_profiler

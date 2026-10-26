@@ -1,0 +1,7 @@
+version: "2.4"
+
+services:
+  fpm-target:
+    volumes:
+      - ./calibration/fpm/park.php:/var/www/html/public/calibration-hold.php:ro
+

@@ -5,5 +5,8 @@ framework:
     session: false
     php_errors:
         log: true
+    profiler:
+        enabled: true
+        collect: false
     router:
         utf8: true

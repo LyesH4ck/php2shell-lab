@@ -9,6 +9,8 @@
         "symfony/framework-bundle": "7.4.19",
         "symfony/http-foundation": "7.4.19",
         "symfony/http-kernel": "7.4.19",
+        "symfony/twig-bundle": "7.4.19",
+        "symfony/web-profiler-bundle": "7.4.19",
         "symfony/yaml": "7.4.*"
     },
     "autoload": {

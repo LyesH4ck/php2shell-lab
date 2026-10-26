@@ -1,0 +1,6 @@
+version: "2.4"
+
+services:
+  fpm-target:
+    volumes:
+      - ./fpm/php/www-single.conf:/usr/local/etc/php-fpm.d/www.conf:ro

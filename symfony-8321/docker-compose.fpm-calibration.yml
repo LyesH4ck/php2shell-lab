@@ -1,0 +1,9 @@
+version: "2.4"
+
+services:
+  fpm-target:
+    # This override is only for local GDB calibration. The ordinary lab and
+    # PoC never mount this endpoint.
+    volumes:
+      - ./calibration/fpm/hold.php:/var/www/html/public/calibration-hold.php:ro
+      - ./calibration/fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
