@@ -52,7 +52,7 @@ recalibration between builds:
 | Symfony 7.4.21 on 8.4.26 | 1 prefork worker, 8M | ✅ RCE |
 | Symfony 7.4.19 on **8.3.21** | **4 prefork workers**, 8M | ✅ RCE (dedicated 8.3 calibration) |
 | Symfony 7.4.19 on **8.3.21 — nginx+FPM** | 1 FPM worker (fenced 4/6-worker also validated) | ✅ heap disclosure via WebProfiler `/_profiler/phpinfo` + RCE (FPM branch of the chain, see [`symfony-8321/FPM-LAB.md`](symfony-8321/FPM-LAB.md)) |
-| **Offsec lab** — PHP 8.4.26, `display_errors=On`, Debian | 1 prefork worker, 8M | ✅ full RCE + flag retrieved (see [`lab/offsec/`](lab/offsec/)) |
+| **Offsec lab** — PHP 8.4.26, `display_errors=On`, Debian | 1 prefork worker, 8M | ✅ full RCE, flag recovered |
 | `php:8.4.26` @ `memory_limit=32M` | 1 worker | ✅ phase 1 leak (auto pad calibration) |
 
 Receipts and screenshots: [`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).
@@ -92,12 +92,41 @@ cd php2shell-lab
 | [`scripts/`](scripts/) | lab lifecycle, exploit runners, safe exposure checker |
 | [`wordpress/`](wordpress/) | real WordPress profile (SQLite) |
 | [`symfony/`](symfony/) + [`symfony-8321/`](symfony-8321/) | real Symfony profiles (7.4.21/8.4.26 and 7.4.19/8.3.21, see [`SYMFONY.md`](SYMFONY.md)) |
-| [`lab/offsec/`](lab/offsec/) | authorized offsec lab: full remote RCE with flag recovery (see [`LOCAL_TO_REMOTE_WALKTHROUGH.md`](lab/offsec/LOCAL_TO_REMOTE_WALKTHROUGH.md)) |
+| [`lab/offsec/`](lab/offsec/) | authorized offsec lab: full remote RCE with flag recovery |
 | [`artifacts/`](artifacts/) | receipts and screenshots of validated runs |
 | [`VULNERABILITY_CHAIN.md`](VULNERABILITY_CHAIN.md) | root cause and chain analysis |
 | [`DETECTION.md`](DETECTION.md) | safe (non-exploit) exposure checker and verdict model |
 | [`WORDPRESS.md`](WORDPRESS.md) | WordPress profile details |
 | [`SYMFONY.md`](SYMFONY.md) | Symfony profile details |
+
+## Offsec lab
+
+The [`lab/offsec/`](lab/offsec/) directory documents a complete
+local-to-remote walkthrough against an **authorized offsec lab** running
+PHP 8.4.26 on a Debian Apache with `display_errors=On` — a profile that
+differs from every Docker image in this repository.
+
+What makes this target interesting:
+
+- it is a **Debian package build** (Apache 2.4.69), not the pinned
+  `php:8.4.26-apache-bookworm` image, so the heap geometry and ELF offsets
+  differ from the calibrated labs;
+- the **phase-2 array overlap** lands at index `406` with `N=407` arrays
+  (found by binary search), not at the Docker lab's `443/983`;
+- the ELF offsets are from a **trixie build** (`zval_ptr_dtor=0x65eb60`,
+  `zif_system=0x465370`), close to but distinct from the bookworm values;
+- the RCE was proven by a **timing side-channel** (`sleep 5`: 5.2s terminal
+  response vs 0.2s baseline), then the flag was recovered from a file
+  readable by `www-data` without privilege escalation.
+
+The full procedure — reconnaissance, phase-1 heap disclosure, phase-2
+libphp disclosure, phase-3 command execution, and flag recovery — is
+documented step by step in
+[`lab/offsec/LOCAL_TO_REMOTE_WALKTHROUGH.md`](lab/offsec/LOCAL_TO_REMOTE_WALKTHROUGH.md).
+The PoC is [`lab/offsec/rce_display_on.py`](lab/offsec/rce_display_on.py)
+and the command helper is
+[`lab/offsec/run_known_command.py`](lab/offsec/run_known_command.py).
+Receipts and raw logs: [`artifacts/remote-offsec-20261026/`](artifacts/remote-offsec-20261026/).
 
 ## Operating the lab
 

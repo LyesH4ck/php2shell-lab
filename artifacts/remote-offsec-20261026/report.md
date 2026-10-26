@@ -95,7 +95,7 @@ found the world-readable proof at `/var/www/proof.txt`.
 The short command `cat ../p*>f` copied it temporarily into the DocumentRoot:
 
 ```text
-31050b60beddc661b64e11663431d2fa
+<redacted>
 ```
 
 The temporary `/var/www/html/f` artifact was removed after collection. Final

