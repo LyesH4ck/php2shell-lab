@@ -1,0 +1,13 @@
+[*] target http://192.168.125.10/index.php (cmd='id>p')
+[*] offsets: zif=0x43a870 dtor=0x613c50 htdata=0x690d8
+[*] rotating worker over HTTP
+[*] stage 1: heap leak (attempt 1/3)
+[-] heap leak missed
+[*] rotating worker over HTTP
+[*] stage 1: heap leak (attempt 2/3)
+[-] heap leak missed
+[*] rotating worker over HTTP
+[*] stage 1: heap leak (attempt 3/3)
+[-] heap leak missed
+[*] rotating worker over HTTP
+HEAP_LEAK_FAILED

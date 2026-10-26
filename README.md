@@ -52,6 +52,7 @@ recalibration between builds:
 | Symfony 7.4.21 on 8.4.26 | 1 prefork worker, 8M | ✅ RCE |
 | Symfony 7.4.19 on **8.3.21** | **4 prefork workers**, 8M | ✅ RCE (dedicated 8.3 calibration) |
 | Symfony 7.4.19 on **8.3.21 — nginx+FPM** | 1 FPM worker (fenced 4/6-worker also validated) | ✅ heap disclosure via WebProfiler `/_profiler/phpinfo` + RCE (FPM branch of the chain, see [`symfony-8321/FPM-LAB.md`](symfony-8321/FPM-LAB.md)) |
+| **Offsec lab** — PHP 8.4.26, `display_errors=On`, Debian | 1 prefork worker, 8M | ✅ full RCE + flag retrieved (see [`lab/offsec/`](lab/offsec/)) |
 | `php:8.4.26` @ `memory_limit=32M` | 1 worker | ✅ phase 1 leak (auto pad calibration) |
 
 Receipts and screenshots: [`artifacts/generic-multi-build-20261023/`](artifacts/generic-multi-build-20261023/).
@@ -91,6 +92,7 @@ cd php2shell-lab
 | [`scripts/`](scripts/) | lab lifecycle, exploit runners, safe exposure checker |
 | [`wordpress/`](wordpress/) | real WordPress profile (SQLite) |
 | [`symfony/`](symfony/) + [`symfony-8321/`](symfony-8321/) | real Symfony profiles (7.4.21/8.4.26 and 7.4.19/8.3.21, see [`SYMFONY.md`](SYMFONY.md)) |
+| [`lab/offsec/`](lab/offsec/) | authorized offsec lab: full remote RCE with flag recovery (see [`LOCAL_TO_REMOTE_WALKTHROUGH.md`](lab/offsec/LOCAL_TO_REMOTE_WALKTHROUGH.md)) |
 | [`artifacts/`](artifacts/) | receipts and screenshots of validated runs |
 | [`VULNERABILITY_CHAIN.md`](VULNERABILITY_CHAIN.md) | root cause and chain analysis |
 | [`DETECTION.md`](DETECTION.md) | safe (non-exploit) exposure checker and verdict model |

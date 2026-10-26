@@ -5,7 +5,7 @@ c3d4d6ce2c8528f52b006ecde7e64dcca0b3a729d6eb2a1a70da40d7e654fb0f  ./.gitattribut
 5dd22a8091932d11599090e6d81057317b209bf272910c0401b5502fed64f392  ./.gitignore
 1d38975c05419e6e07c276fce16ee4a9ac8ffda3e5369dca0f09aa82679fc04f  ./DETECTION.md
 771af79a176cf81b66b727102cd6b1a2fc97777168c52b50089af3c03ca6f6e2  ./Dockerfile
-7602be651c0f57118db29eade8ce4f2b88dc6244ab181281f70b1e4ce6058396  ./README.md
+b6253fc239f2af152a5a7dc1d6f0f8792cea80f6a1ef430dee66e8a699ef988d  ./README.md
 854a74efed8866497cbad562dad4404f34b633e543aae3d92cd5a0f7948da1ff  ./SYMFONY.md
 9c2fba391ea40a82a6f8fd0c9e6af0f148af8a098bfd104f9ae214d719842e4f  ./VULNERABILITY_CHAIN.md
 6225b1484d9994c5643bea12ebf74a562700ce332b8c9004845d77f60fd14b7e  ./WORDPRESS.md
@@ -84,6 +84,9 @@ cf921e74080b888218a10f36abb353ae9ac52916d78ade2dfe877cbdcfdf4e34  ./artifacts/ge
 1b6abf66100c048aaab875fa43a6a7f595a9a31f0fe0c1b95a817e19b6367c0f  ./artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.20.png
 a2732ca8c2e90d82283122240fb7e47ebd4e4e5e23dc29041d6e291438ee3d83  ./artifacts/generic-multi-build-20261023/screenshots/rce-wordpress-php-8.4.25.png
 ddba04344017115d23f2aebcb0232996e8e6f81cdc615a04c5b860250ef9c9cf  ./artifacts/generic-multi-build-20261023/wordpress-multiworker-run1/result.json
+cd200958ee08bf44693f9c5d701a0135eb91bc3da271dad53cdbc0fa802a8e5c  ./artifacts/remote-offsec-20261026/remote-192.168.125.10-alvarodh5-20261026T094909Z.log
+ecde549a050db2e0a6cf318e25755fd744c278855d0ad8d6bedb3fc91b11f45b  ./artifacts/remote-offsec-20261026/remote-192.168.125.10-legacy8m-20261026T094732Z.log
+b4f05e12605d41e68b67472a44c0d63daad39682ba9e6207fcd5021b6e83bff7  ./artifacts/remote-offsec-20261026/report.md
 02f0044c64c1811a5d62ea9602fadc141879ddd6f9450899d6ef61b5e6f52eff  ./artifacts/symfony-20261025/README.md
 6dcf8f893c1203dfbede051fc79865996e5dd1b3d81e80fd3b2998ab885fe339  ./artifacts/symfony-20261025/screenshots/rce-symfony-php-8.3.21.png
 7f038c805fd0461b0a63be479e0641d24490e2aeac29851e087de6dc80418a51  ./artifacts/symfony-20261025/screenshots/rce-symfony-php-8.4.26.png
@@ -104,6 +107,10 @@ d480ccce60aef568f7dcc13a8942efd1f0f7aa0a758fe71da86dc751da1508db  ./generic/expl
 4238f6872b6755fe743daadcd7aea7cb49267094b2e4c570d0c7700ecbae14b4  ./generic/profiles/php-8.4.20-amd64.json
 54f2e84af891de941a62cc331f2bc6450fe540b3f57447cf83e93580cb7f7dbd  ./generic/profiles/php-8.4.25-amd64.json
 3305f35d247f552eb2f3a4f284bee4f35e3b5a38448331b7c53149d7806f6321  ./generic/profiles/php-8.4.26-amd64.json
+2ce6e18419a2fe07e8f6edcf8938b6635ebba01eccc53a8d472d7e6bb2a5457e  ./lab/offsec/LOCAL_TO_REMOTE_WALKTHROUGH.md
+2acf2b848dc169ecc28c269d0fdb65dfa5db48f4670158cce0265fddac20edcd  ./lab/offsec/rce_display_on.py
+810a16caaacbbccfc522a76946f0dff36191f8859689a329803489262ac7a2b5  ./lab/offsec/remote_onchain.py
+1e94af282183ecf48eb98eeb97ca546ed1898513092c5b6f7935c6ed524b7a60  ./lab/offsec/run_known_command.py
 0ac3def9bd27dc008106d5ad7afc292d4da22d399024309b78bf2da9cf5cf879  ./scripts/clean-terminal-evidence.py
 f691fa72db622b2625d805c37797ba82065881c468e457ef029203d6f7cc0d85  ./scripts/compose-command.sh
 a172099a37209e75b557eb7a6d2ea98a8299d963225d4b6048be01a45adbfcb1  ./scripts/down.sh
@@ -128,6 +135,8 @@ ae10fe471fc1fdf44e4fa531999198dfca1d61e2aeb965b12d42289c89f2dbb9  ./scripts/word
 30560342f13ca8b9b5ec9df09218111bf5b6feecb3a744ba0583ed432c2b068e  ./scripts/wordpress-test.sh
 372ba841ad5d3527fad76cdc019471a5276871006b429da2a72432697673df24  ./scripts/wordpress-up.sh
 3d5dda09278f5b3070380008a7bd9be102ab4e30b707071f5a384dab6515aeae  ./scripts/wordpress-verify.sh
+d22c60f3651b9a2d6010f04279265e6beb23726c0d8300cde3783366ac7d59ee  ./sources/alvarodh5-php2shell/README.md
+d39374c1864792d7fb1e4d9df37a2c1f87f0dcf7085269f2ff7ad3d1564a861f  ./sources/alvarodh5-php2shell/exploit.py
 2e1862319e3b319f05d92bfec70c3aab2230472fea4033733a5b371a7e01fede  ./symfony-8321/CALIBRATION-PHP-8.3.21.md
 179769585ab2f9ca5453615d2b9b31cbc47a5c7bb067cc102adb40c2c0b62aa8  ./symfony-8321/COMPATIBILITY.md
 dc9de947bb79f880c55b0ade88fc5119e29db67bc506080384de6bebe2466a98  ./symfony-8321/Dockerfile
